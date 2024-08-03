@@ -6,15 +6,17 @@
    sudo apt-get install python3-tk
    ```
 
-2. **Ejecutar el script**: Guarda el código en un archivo, por ejemplo, `app_manager.py`, y ejecuta el script con:
+2. **Ejecutar el script**: Para abrir la interfaz de usuario ejecuta el script en una terminal con:
 
    ```sh
    python3 chord_autoscroll.py
    ```
 
-Los cambios principales en esta versión son:
+Abre un archivo de acordes como los que están aquí.
 
-Se ha añadido una nueva función calculate_speed que utiliza una función exponencial para calcular la velocidad:
+### Cambios principales en esta versión:
+
+Se ha añadido una nueva función **calculate_speed** que utiliza una función exponencial para calcular la velocidad:
 
    ```sh
 pythonCopydef calculate_speed(self, value):
@@ -24,7 +26,7 @@ pythonCopydef calculate_speed(self, value):
     return int(min_speed * math.exp(factor * (30 - value)))
    ```
    
-La función update_speed ahora utiliza calculate_speed:
+La función **update_speed** ahora utiliza calculate_speed:
 
    ```sh
 pythonCopydef update_speed(self, value):
