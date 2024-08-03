@@ -1,34 +1,47 @@
 ### Instrucciones
 
 1. **Instalación de Tkinter**: Asegúrate de tener Tkinter instalado en tu sistema. En la mayoría de las distribuciones de Linux, viene preinstalado, pero puedes instalarlo con:
+
    ```sh
    sudo apt-get install python3-tk
    ```
 
 2. **Ejecutar el script**: Guarda el código en un archivo, por ejemplo, `app_manager.py`, y ejecuta el script con:
+
    ```sh
    python3 chord_autoscroll.py
    ```
 
-Modificación de la velocidad de desplazamiento por defecto a 800ms (el doble de lento que antes 400ms):
+Los cambios principales en esta versión son:
+
+Se ha añadido una nueva función calculate_speed que utiliza una función exponencial para calcular la velocidad:
+
    ```sh
-pythonCopyself.scroll_speed = 800  # Velocidad por defecto (milisegundos)
+pythonCopydef calculate_speed(self, value):
+    min_speed = 320
+    max_speed = 6400
+    factor = math.log(max_speed / min_speed) / 29
+    return int(min_speed * math.exp(factor * (30 - value)))
    ```
    
-Ajuste de la función update_speed para proporcionar un rango aún más lento de velocidades:
+La función update_speed ahora utiliza calculate_speed:
+
    ```sh
 pythonCopydef update_speed(self, value):
-    # Ajuste de la velocidad: 1600ms (más lento) a 80ms (más rápido)
-    self.scroll_speed = int(1680 - int(value) * 80)
+    self.scroll_speed = self.calculate_speed(float(value))
    ```
+   
+La velocidad por defecto ahora se calcula utilizando la nueva función:
 
+   ```sh
+pythonCopyself.scroll_speed = self.calculate_speed(15)  # Velocidad por defecto
+   ```
+   
 Con estos cambios:
 
-La velocidad más lenta ahora es de 1600ms (1.6 segundos) entre cada desplazamiento (cuando el valor de la escala es 1).
-La velocidad más rápida ahora es de 80ms (cuando el valor de la escala es 20).
-La velocidad media (cuando el valor de la escala es 10) será de 880ms.
+La velocidad más lenta sigue siendo de 6400ms (cuando el valor de la escala es 1).
+La velocidad más rápida sigue siendo de 320ms (cuando el valor de la escala es 30).
+El cambio entre estas velocidades ahora es progresivo y suave, siguiendo una curva exponencial.
 
-Esto hace que todo el rango de velocidades sea nuevamente la mitad de rápido que en la versión anterior. La velocidad más lenta es el doble de lenta que en la versión anterior, y la velocidad más rápida también es el doble de lenta que antes.
-
-
+Esta implementación proporciona una transición más natural entre las velocidades, con cambios más pequeños en las velocidades más lentas y cambios más grandes en las velocidades más rápidas. Esto debería dar una sensación más intuitiva al ajustar la velocidad.
 

@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
+import math
 
 class TextScrollerApp:
     def __init__(self, master):
         self.master = master
         self.master.title("Lector y Editor de Texto")
-        self.master.geometry("600x400")
+        self.master.geometry("700x400")
 
         self.text_widget = tk.Text(self.master, wrap=tk.WORD)
         self.text_widget.pack(expand=True, fill='both')
@@ -37,12 +38,12 @@ class TextScrollerApp:
         self.speed_label = tk.Label(self.control_frame, text="Velocidad:")
         self.speed_label.pack(side=tk.LEFT)
 
-        self.speed_scale = tk.Scale(self.control_frame, from_=1, to=20, orient=tk.HORIZONTAL, command=self.update_speed)
-        self.speed_scale.set(10)  # Valor medio por defecto
+        self.speed_scale = tk.Scale(self.control_frame, from_=1, to=30, orient=tk.HORIZONTAL, command=self.update_speed, length=300)
+        self.speed_scale.set(15)  # Valor medio por defecto
         self.speed_scale.pack(side=tk.LEFT)
 
         self.is_scrolling = False
-        self.scroll_speed = 800  # Velocidad por defecto (milisegundos)
+        self.scroll_speed = self.calculate_speed(15)  # Velocidad por defecto
 
     def open_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
@@ -73,9 +74,15 @@ class TextScrollerApp:
             self.text_widget.yview_scroll(1, 'units')
             self.master.after(self.scroll_speed, self.scroll_text)
 
+    def calculate_speed(self, value):
+        # Función exponencial para un cambio más progresivo
+        min_speed = 320
+        max_speed = 6400
+        factor = math.log(max_speed / min_speed) / 29  # 29 es el rango (30 - 1)
+        return int(min_speed * math.exp(factor * (30 - value)))
+
     def update_speed(self, value):
-        # Ajuste de la velocidad: 1600ms (más lento) a 80ms (más rápido)
-        self.scroll_speed = int(1680 - int(value) * 80)
+        self.scroll_speed = self.calculate_speed(float(value))
 
 if __name__ == "__main__":
     root = tk.Tk()
