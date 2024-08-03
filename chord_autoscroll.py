@@ -42,7 +42,7 @@ class TextScrollerApp:
         self.speed_scale.pack(side=tk.LEFT)
 
         self.is_scrolling = False
-        self.scroll_speed = 400  # Velocidad por defecto (milisegundos)
+        self.scroll_speed = 800  # Velocidad por defecto (milisegundos)
 
     def open_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
@@ -74,8 +74,8 @@ class TextScrollerApp:
             self.master.after(self.scroll_speed, self.scroll_text)
 
     def update_speed(self, value):
-        # Ajuste de la velocidad: 800ms (más lento) a 40ms (más rápido)
-        self.scroll_speed = int(840 - int(value) * 40)
+        # Ajuste de la velocidad: 1600ms (más lento) a 80ms (más rápido)
+        self.scroll_speed = int(1680 - int(value) * 80)
 
 if __name__ == "__main__":
     root = tk.Tk()
