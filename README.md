@@ -1,4 +1,14 @@
+### Instrucciones
 
+1. **Instalación de Tkinter**: Asegúrate de tener Tkinter instalado en tu sistema. En la mayoría de las distribuciones de Linux, viene preinstalado, pero puedes instalarlo con:
+   ```sh
+   sudo apt-get install python3-tk
+   ```
+
+2. **Ejecutar el script**: Guarda el código en un archivo, por ejemplo, `app_manager.py`, y ejecuta el script con:
+   ```sh
+   python3 chord_autoscroll.py
+   ```
 
 1. Modificación de la velocidad de desplazamiento por defecto a 400ms (el doble de lento que antes que era 200):
    ```python
