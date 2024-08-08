@@ -3,7 +3,7 @@
 1. **Instalación de Tkinter**: Asegúrate de tener Tkinter instalado en tu sistema. En la mayoría de las distribuciones de Linux, viene preinstalado, pero puedes instalarlo con:
 
    ```sh
-   sudo apt-get install python3-tk
+   sudo apt-get install python3-tk tkdnd
    ```
 
 2. **Ejecutar el script**: Para abrir la interfaz de usuario ejecuta el script en una terminal con:
