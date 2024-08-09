@@ -3,13 +3,13 @@
 1. **Instalación de Tkinter**: Asegúrate de tener Tkinter instalado en tu sistema. En la mayoría de las distribuciones de Linux, viene preinstalado, pero puedes instalarlo con:
 
    ```sh
-   sudo apt-get install python3-tk tkdnd
+   sudo apt-get install python3-pyqt6
    ```
 
 2. **Ejecutar el script**: Para abrir la interfaz de usuario ejecuta el script en una terminal con:
 
    ```sh
-   python3 chord_autoscroll.py
+   python3 chord_autoscroll_v7.py
    ```
 
 Abre un archivo de acordes como los que están aquí.
