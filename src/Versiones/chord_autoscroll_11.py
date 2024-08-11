@@ -8,8 +8,6 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent
 
-# este programa es la versión 7
-
 class TextScrollerApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -19,7 +17,7 @@ class TextScrollerApp(QMainWindow):
         self.current_file = None
         self.is_scrolling = False
         self.max_speed = 100  # Nueva velocidad máxima
-        self.scroll_speed = self.calculate_speed(15)  # Default speed
+        self.scroll_speed = self.calculate_speed(15)  # Velocidad por defecto
 
         self.init_ui()
 
@@ -56,6 +54,7 @@ class TextScrollerApp(QMainWindow):
 
         self.create_menu_bar()
 
+        # Habilitar el arrastre y soltado de archivos
         self.setAcceptDrops(True)
 
     def create_menu_bar(self):
@@ -106,11 +105,15 @@ class TextScrollerApp(QMainWindow):
             self.load_file(file_path)
 
     def load_file(self, file_path):
-        with open(file_path, 'r', encoding='utf-8') as file:
-            content = file.read()
-            self.text_widget.setPlainText(content)
-        self.current_file = file_path
-        self.setWindowTitle(f"Lector y Editor de Texto - {os.path.basename(file_path)}")
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+                self.text_widget.setPlainText(content)  # Mostrar el contenido en el editor de texto
+            self.current_file = file_path
+            self.setWindowTitle(f"Lector y Editor de Texto - {os.path.basename(file_path)}")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {e}")
+
 
     def save_file(self):
         if self.current_file:
@@ -131,13 +134,31 @@ class TextScrollerApp(QMainWindow):
             self.setWindowTitle(f"Lector y Editor de Texto - {os.path.basename(file_path)}")
             QMessageBox.information(self, "Guardado", "Archivo guardado exitosamente.")
 
+    # Métodos para arrastrar y soltar archivos
     def dragEnterEvent(self, event: QDragEnterEvent):
-        if event.mimeData().hasUrls() and event.mimeData().urls()[0].toLocalFile().endswith('.txt'):
-            event.acceptProposedAction()
+        print("dragEnterEvent triggered")
+        if event.mimeData().hasUrls():
+            urls = event.mimeData().urls()
+            print("URLs:", urls)
+            if len(urls) > 0 and urls[0].toLocalFile().endswith('.txt'):
+                event.acceptProposedAction()
+            else:
+                event.ignore()
+        else:
+            event.ignore()
 
     def dropEvent(self, event: QDropEvent):
-        file_path = event.mimeData().urls()[0].toLocalFile()
-        self.load_file(file_path)
+        print("dropEvent triggered")
+        urls = event.mimeData().urls()
+        if len(urls) > 0:
+            file_path = urls[0].toLocalFile()
+            print("File path:", file_path)
+            if file_path.endswith('.txt'):
+                self.load_file(file_path)
+            else:
+                event.ignore()
+        else:
+            event.ignore()
 
     def start_scrolling(self):
         if not self.is_scrolling:

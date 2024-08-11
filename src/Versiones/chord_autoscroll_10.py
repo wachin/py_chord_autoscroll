@@ -8,8 +8,6 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent
 
-# este programa es la versión 7
-
 class TextScrollerApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -19,7 +17,7 @@ class TextScrollerApp(QMainWindow):
         self.current_file = None
         self.is_scrolling = False
         self.max_speed = 100  # Nueva velocidad máxima
-        self.scroll_speed = self.calculate_speed(15)  # Default speed
+        self.scroll_speed = self.calculate_speed(15)  # Velocidad por defecto
 
         self.init_ui()
 
@@ -56,6 +54,7 @@ class TextScrollerApp(QMainWindow):
 
         self.create_menu_bar()
 
+        # Habilitar el arrastre y soltado de archivos
         self.setAcceptDrops(True)
 
     def create_menu_bar(self):
@@ -131,6 +130,7 @@ class TextScrollerApp(QMainWindow):
             self.setWindowTitle(f"Lector y Editor de Texto - {os.path.basename(file_path)}")
             QMessageBox.information(self, "Guardado", "Archivo guardado exitosamente.")
 
+    # Métodos para arrastrar y soltar archivos
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls() and event.mimeData().urls()[0].toLocalFile().endswith('.txt'):
             event.acceptProposedAction()
