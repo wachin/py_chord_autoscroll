@@ -9,7 +9,7 @@
 2. **Ejecutar el script**: Para abrir la interfaz de usuario ejecuta el script en una terminal con:
 
    ```sh
-   python3 chord_autoscroll_v7.py
+   python3 chord_autoscroll.py
    ```
 
 Abre un archivo de acordes como los que están aquí.
