@@ -15,7 +15,7 @@ Antes de ejecutar el programa, necesitas asegurarte de que ciertos paquetes est�
 sudo apt-get install python3-tk tk-dev python3 python3-pyqt6 tkdnd python3-mpmath python3-simplejson python3-all-dev fonts-noto-mono
 ```
 
-### 2. **Ejecutar el script**
+### 2. **Ejecutar el programa**
 Una vez instaladas las dependencias, puedes ejecutar el programa desde la terminal. Navega a la carpeta donde se encuentra el archivo `chord_autoscroll.py` y usa el siguiente comando:
 
 ```bash
@@ -82,6 +82,8 @@ y debes instalar la siguiente fuente tipográfica que la dejé allí mismo:
 
 /Cancionero/Fonts/iosevka-wps-linux/
 
+Para editar los archivos .docx puedes usar LibreOffice, WPS Office, Microsoft Windows (si lo tenga instalado en Wine o PlayOnLinux)
+
 Le dejo los siguientes temas importantes que he escrito en mi Blog:
 
 [Instalar fuentes tipográficas de Windows en Linux(Ubuntu, Debian, Fedora, etc) para compatibilidad de archivos de Midrosoft Office en LibreOffice, WPS Office](https://facilitarelsoftwarelibre.blogspot.com/2018/11/instalar-fuentes-de-windows-en.html)
@@ -107,3 +109,7 @@ Si tienes alguna dificultad o preguntas, puedes contactar al desarrollador.
 ### **Notas sobre las dependencias:**
 
 Si encuentras que falta alguna dependencia en tu sistema, puedes agregarla mediante el comando `apt-get` de forma similar. El programa depende principalmente de **Python 3**, **PyQt6** y algunas bibliotecas adicionales para manejo de fuentes y archivos.
+
+---
+
+Que Dios les bendiga
