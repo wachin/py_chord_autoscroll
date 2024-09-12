@@ -1,52 +1,67 @@
-### Instrucciones
+### Manual de Instalación y Uso del Programa para Guitarristas en Linux Debian 12, MX Linux 23
 
-1. **Instalación de Tkinter**: Asegúrate de tener instalados los siguientes paquetes:
+Este manual está diseñado para guiar a guitarristas en la instalación y uso del programa de auto-scroll y transposición de acordes en Linux Debian 12, MX Linux 23. Con este programa, podrás cargar tus canciones con acordes, transportarlos fácilmente y desplazarte automáticamente por el texto, ¡perfecto para tus ensayos!
 
-   ```sh
-   sudo apt-get install python3-tk tk-dev python3 python3-pyqt6 tkdnd python3-mpmath python3-simplejson python3-all-dev python3-pyqt5 fonts-noto-mono
-   ```
+**Nota:** Es posible funcione en Ubuntu 24.04, Linux Mint y otros.
 
-2. **Ejecutar el script**: Para abrir la interfaz de usuario ejecuta el script en una terminal con:
+---
 
-   ```sh
-   python3 chord_autoscroll.py
-   ```
+## **Instrucciones de Instalación**
 
-Abre un archivo de acordes como los que están aquí.
+### 1. **Instalación de dependencias**
+Antes de ejecutar el programa, necesitas asegurarte de que ciertos paquetes estén instalados en tu sistema. Ejecuta el siguiente comando en la terminal para instalar las dependencias necesarias:
 
-### Cambios principales en esta versión:
+```bash
+sudo apt-get install python3-tk tk-dev python3 python3-pyqt6 tkdnd python3-mpmath python3-simplejson python3-all-dev fonts-noto-mono
+```
 
-Se ha añadido una nueva función **calculate_speed** que utiliza una función exponencial para calcular la velocidad:
+### 2. **Ejecutar el script**
+Una vez instaladas las dependencias, puedes ejecutar el programa desde la terminal. Navega a la carpeta donde se encuentra el archivo `chord_autoscroll.py` y usa el siguiente comando:
 
-   ```sh
-pythonCopydef calculate_speed(self, value):
-    min_speed = 320
-    max_speed = 6400
-    factor = math.log(max_speed / min_speed) / 29
-    return int(min_speed * math.exp(factor * (30 - value)))
-   ```
-   
-La función **update_speed** ahora utiliza calculate_speed:
+```bash
+python3 chord_autoscroll.py
+```
 
-   ```sh
-pythonCopydef update_speed(self, value):
-    self.scroll_speed = self.calculate_speed(float(value))
-   ```
-   
-La velocidad por defecto ahora se calcula utilizando la nueva función:
+---
 
-   ```sh
-pythonCopyself.scroll_speed = self.calculate_speed(15)  # Velocidad por defecto
-   ```
-   
-Con estos cambios:
+## **Modo de Uso**
 
-La velocidad más lenta sigue siendo de 6400ms (cuando el valor de la escala es 1).
-La velocidad más rápida sigue siendo de 320ms (cuando el valor de la escala es 30).
-El cambio entre estas velocidades ahora es progresivo y suave, siguiendo una curva exponencial.
+### 1. **Abrir canciones**
+Existen dos maneras de cargar tus archivos de texto con acordes en el programa:
+- **Arrastrar y soltar archivos**: Simplemente arrastra un archivo de texto (con extensión `.txt`) hacia la ventana del programa.
+- **Abrir desde el menú**: Haz clic en "Archivo > Abrir" en la barra de menú para seleccionar y cargar tus archivos.
 
-Esta implementación proporciona una transición más natural entre las velocidades, con cambios más pequeños en las velocidades más lentas y cambios más grandes en las velocidades más rápidas. Esto debería dar una sensación más intuitiva al ajustar la velocidad.
+**Ejemplos de archivos incluidos:**
+- *Eres Todopoderoso (Bm).txt*
+- *La niña de tus ojos - Daniel Calveti (C).txt*
+- *Sana nuestra tierra - Marcos W. (F).txt*
+- *Sananos - Marcos W. (D).txt*
 
+### 2. **Transponer acordes**
+El programa cuenta con un botón **"Transponer"**, ubicado en la esquina inferior derecha. Al hacer clic, se abrirá un menú donde puedes ajustar los semitonos de tus acordes:
+- **Subir semitonos**: Desplázate hacia arriba para aumentar el tono.
+- **Bajar semitonos**: Desplázate hacia abajo para reducir el tono.
 
+Esto es especialmente útil cuando necesitas adaptar una canción a tu voz o a la afinación de tu guitarra.
 
+### 3. **Control de desplazamiento**
+El programa te permite desplazarte automáticamente por la letra y acordes de la canción, facilitando la lectura durante la interpretación.
 
+- **Iniciar/Pausar desplazamiento**: Usa los botones **"Iniciar"** y **"Pausar"** para controlar el desplazamiento automático.
+- **Ajustar velocidad**: Usa el deslizador de velocidad para ajustar la rapidez del desplazamiento según tu necesidad.
+
+### 4. **Cambiar fuente**
+El programa ofrece la posibilidad de personalizar la fuente de los acordes. En el menú "Opciones > Cambiar fuente", puedes seleccionar la fuente de tu preferencia. Por defecto, se utiliza una fuente monoespaciada **Noto Mono**, perfecta para asegurar la correcta alineación de los acordes.
+
+---
+
+## **Consideraciones Finales**
+Este programa es ideal para guitarristas que necesitan gestionar archivos de canciones y ajustar los acordes rápidamente durante ensayos o presentaciones. Con características de auto-scroll y transposición, tendrás todas las herramientas necesarias a tu disposición.
+
+Si tienes alguna dificultad o preguntas, puedes contactar al desarrollador.
+
+---
+
+### **Notas sobre las dependencias:**
+
+Si encuentras que falta alguna dependencia en tu sistema, puedes agregarla mediante el comando `apt-get` de forma similar. El programa depende principalmente de **Python 3**, **PyQt6** y algunas bibliotecas adicionales para manejo de fuentes y archivos.
