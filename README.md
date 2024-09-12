@@ -22,9 +22,13 @@ Una vez instaladas las dependencias, puedes ejecutar el programa desde la termin
 python3 chord_autoscroll.py
 ```
 
+así como en la siguiente captura de pantalla:
+
+![](src/vx_images/01-lanzando-chord_autoscroll.py.webp)
+
 ---
 
-## **Modo de Uso**
+## Modo de Uso
 
 ### 1. **Abrir canciones**
 Existen dos maneras de cargar tus archivos de texto con acordes en el programa:
@@ -32,10 +36,13 @@ Existen dos maneras de cargar tus archivos de texto con acordes en el programa:
 - **Abrir desde el menú**: Haz clic en "Archivo > Abrir" en la barra de menú para seleccionar y cargar tus archivos.
 
 **Ejemplos de archivos incluidos:**
-- *Eres Todopoderoso (Bm).txt*
+
 - *La niña de tus ojos - Daniel Calveti (C).txt*
 - *Sana nuestra tierra - Marcos W. (F).txt*
 - *Sananos - Marcos W. (D).txt*
+- *Eres Todopoderoso (Bm).txt*
+
+![](src/vx_images/02-chord_autoscroll.py-con-Eres-Todopoderoso.webp)
 
 ### 2. **Transponer acordes**
 El programa cuenta con un botón **"Transponer"**, ubicado en la esquina inferior derecha. Al hacer clic, se abrirá un menú donde puedes ajustar los semitonos de tus acordes:
@@ -55,7 +62,42 @@ El programa ofrece la posibilidad de personalizar la fuente de los acordes. En e
 
 ---
 
+### 5. He hecho un Cancionero con muchas alabanzas que usamos en la Iglesia
+
+ En la siguiente dirección está mi cancionero con letras y acordes de guitarra:
+
+[https://github.com/wachin/Cancionero](https://github.com/wachin/Cancionero)
+
+lo puedes descargar así:
+
+![](src/vx_images/03-descarga-mi-cancionero-de-canciones-con-acordes-de-guitarra.webp)
+
+si eres desarrollador puedes Clonarlo, también crear un Fork.
+
+Las canciones están en la carpeta:
+
+/Acordes de Guitarra para celular (63x110mm)
+
+y debes instalar la siguiente fuente tipográfica que la dejé allí mismo:
+
+/Cancionero/Fonts/iosevka-wps-linux/
+
+Le dejo los siguientes temas importantes que he escrito en mi Blog:
+
+[Instalar fuentes tipográficas de Windows en Linux(Ubuntu, Debian, Fedora, etc) para compatibilidad de archivos de Midrosoft Office en LibreOffice, WPS Office](https://facilitarelsoftwarelibre.blogspot.com/2018/11/instalar-fuentes-de-windows-en.html)
+
+[Cómo instalar fuentes tipográficas descargadas desde Internet en Linux + Análisis de las fuentes de los repositorios de Debian, Ubuntu: Ibm, Noto, Liberation, Dejavu, Bitstream Vera , Freefont](https://facilitarelsoftwarelibre.blogspot.com/2021/01/como-instalar-fuentes-tipograficas-en-linux.html)
+
+[Fuentes monoespaciadas (mono fonts) en WPS Office no están alineadas](https://facilitarelsoftwarelibre.blogspot.com/2022/05/problema-con-las-fuentes-monoespaciadas.html)
+
+También revise el diccionario de acordes:
+
+/Cancionero/Diccionario de Acordes/
+
+---
+
 ## **Consideraciones Finales**
+
 Este programa es ideal para guitarristas que necesitan gestionar archivos de canciones y ajustar los acordes rápidamente durante ensayos o presentaciones. Con características de auto-scroll y transposición, tendrás todas las herramientas necesarias a tu disposición.
 
 Si tienes alguna dificultad o preguntas, puedes contactar al desarrollador.
