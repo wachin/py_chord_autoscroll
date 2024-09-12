@@ -218,22 +218,66 @@ class TextScrollerApp(QMainWindow):
         self.text_widget.setPlainText(transposed_content)
 
     def transpose_text(self, text, semitones):
-        chord_pattern = r'\b[A-G](#|b)?(m|Abm|dim|dim7|aug|maj|min|sus|bm|add)?[0-9]?(?:\s|$)'
+        chord_pattern = r'\b[A-G](#|b)?(m|maj|min|dim|aug|sus|add)?[0-9]?(?!\w)'
 
-        def transpose_chord(match):
-            chord = match.group(0)
+        chord_base = [
+            ['C'], ['C#', 'Db'], ['D'], ['D#', 'Eb'], ['E'], ['F'],
+            ['F#', 'Gb'], ['G'], ['G#', 'Ab'], ['A'], ['A#', 'Bb'], ['B']
+        ]
+
+        def transpose_chord(chord, spaces_after):
             root = chord[0]
-            sharp_flat = '#' if '#' in chord else 'b' if 'b' in chord else ''
-            suffix = chord[len(root + sharp_flat):]
+            accidental = '#' if '#' in chord else 'b' if 'b' in chord else ''
+            suffix = chord[len(root + accidental):]
 
-            notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-            index = notes.index(root + sharp_flat) if root + sharp_flat in notes else notes.index(root)
-            new_index = (index + semitones) % 12
-            new_root = notes[new_index]
+            current_index = next(i for i, group in enumerate(chord_base) if root + accidental in group)
+            new_index = (current_index + semitones) % len(chord_base)
+            new_root = chord_base[new_index][0]
 
-            return new_root + suffix
+            if len(chord_base[new_index]) > 1:
+                new_root = chord_base[new_index][0] if semitones > 0 else chord_base[new_index][1]
 
-        return re.sub(chord_pattern, transpose_chord, text)
+            new_chord = new_root + suffix
+
+            # Ajustar espacios
+            if accidental and not ('#' in new_chord or 'b' in new_chord):
+                spaces_after += 1  # Añadir espacio al quitar # o b
+            elif not accidental and ('#' in new_chord or 'b' in new_chord):
+                if spaces_after > 0:
+                    spaces_after -= 0  # Quitar espacio al añadir # o b, solo si hay espacio disponible
+
+            return new_chord, ' ' * spaces_after
+
+        def process_line(line):
+            chord_positions = list(re.finditer(chord_pattern, line))
+            if not chord_positions:
+                return line
+
+            new_line = []
+            last_end = 0
+
+            for i, match in enumerate(chord_positions):
+                # Añadir el texto entre acordes
+                new_line.append(line[last_end:match.start()])
+
+                # Calcular espacios después del acorde
+                next_pos = chord_positions[i+1].start() if i+1 < len(chord_positions) else len(line)
+                spaces_after = next_pos - match.end()
+
+                # Transponer el acorde
+                new_chord, new_spaces = transpose_chord(match.group(), spaces_after)
+                new_line.append(new_chord + new_spaces)
+
+                last_end = next_pos
+
+            # Añadir el resto de la línea después del último acorde
+            new_line.append(line[last_end:])
+
+            return ''.join(new_line)
+
+        lines = text.split('\n')
+        transposed_lines = [process_line(line) for line in lines]
+        return '\n'.join(transposed_lines)
 
     def load_config(self):
         if os.path.exists(self.config_file):
