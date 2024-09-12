@@ -314,15 +314,17 @@ class TextScrollerApp(QMainWindow):
     def load_config(self):
         if os.path.exists(self.config_file):
             with open(self.config_file, 'r') as f:
-                config = json.load(f)
-                self.max_speed = config.get('max_speed', 100)
+                self.config = json.load(f)
+        else:
+            self.config = {
+                'max_speed': 100,
+                'font_family': 'Noto Mono',  # Fuente predeterminada
+                'font_size': 10  # Tamaño de fuente predeterminado
+            }
 
     def save_config(self):
-        config = {
-            'max_speed': self.max_speed
-        }
         with open(self.config_file, 'w') as f:
-            json.dump(config, f)
+            json.dump(self.config, f)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
