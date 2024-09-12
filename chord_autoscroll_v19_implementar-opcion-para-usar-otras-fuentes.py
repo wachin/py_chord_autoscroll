@@ -3,6 +3,7 @@ import os
 import math
 import re
 import json
+from PyQt6.QtGui import QFont, QFontDialog
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QWidget, QPushButton, QLabel, QSlider, QFileDialog, QMenuBar,
                              QMenu, QMessageBox, QInputDialog)

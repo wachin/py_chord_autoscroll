@@ -3,8 +3,9 @@
 1. **Instalación de Tkinter**: Asegúrate de tener Tkinter instalado en tu sistema. En la mayoría de las distribuciones de Linux, viene preinstalado, pero puedes instalarlo con:
 
    ```sh
-   sudo apt-get install python3-pyqt6
+   sudo apt-get install python3-tk tk-dev python3 python3-pyqt6 tkdnd python3-mpmath python3-simplejson python3-all-dev python3-pyqt5
    ```
+
 
 2. **Ejecutar el script**: Para abrir la interfaz de usuario ejecuta el script en una terminal con:
 
