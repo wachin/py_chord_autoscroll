@@ -2,50 +2,50 @@ Eres Todopoderoso
 Danilo Montero
 
 INTRO
-Am
+Bm
 
 VERSO I
-   Am                  F
+   Bm                  G
 La única razón de mi adoración
-  C           G
+  D           A
 Eres tú mi Jesús
-   Am              F
+   Bm              G
 El único motivo para vivir
-  C           G
+  D           A
 Eres tú Mi Señor
 
 VERSO II
-       Am          F
+       Bm          G
 Mi única verdad está en Ti
-         C              G
+         D              A
 Eres mi luz y mi salvación
-       Am           F
+       Bm           G
 Mi único amor eres Tu Señor
-        C              G
+        D              A
 Y por siempre te alabaré
 
 CORO
-         Am       F
-Tu Eres Todo poderoso
-       C             G
-Eres Grande y Majestuoso
-       Am          F
-Eres Fuerte, Invencible
-          C          G           
-Y no hay nadie como Tú
-
-VERSO Ifile:///home/wachin/Dev-python/py_chord_autoscroll/La niña de tus ojos - Daniel Calveti (B).txt
-
-VERSO II
-
-CORO X2
          Bm       G
 Tu Eres Todo poderoso
        D             A
 Eres Grande y Majestuoso
        Bm          G
+Eres Fuerte, Invencible
+          D          A           
+Y no hay nadie como Tú
+
+VERSO I   
+
+VERSO II
+
+CORO X2
+         C#m       A
+Tu Eres Todo poderoso
+       E             B
+Eres Grande y Majestuoso
+       C#m          A
 Eres Fuerte e Invencible
-          D          A
+          E          B
 Y no hay nadie como Tú
 
 SOLO
