@@ -27,19 +27,28 @@ class TextScrollerApp(QMainWindow):
         self.scroll_speed = self.calculate_speed(15)  # Velocidad predeterminada
 
         self.config_file = 'config.json'
+
+        # Inicializar configuración antes de usarla
+        self.config = {}
         self.load_config()
 
         self.init_ui()
 
     def select_font(self):
         # Abrir diálogo de selección de fuente
-        font, ok = QFontDialog.getFont(QFont("Courier", 10), self, "Selecciona una fuente")
+        font, ok = QFontDialog.getFont(QFont(self.config.get('font_family', 'Noto Mono'),
+                                            self.config.get('font_size', 10)),
+                                    self, "Selecciona una fuente")
 
         # Si el usuario selecciona una fuente y presiona OK
         if ok:
             # Aplicar la fuente seleccionada al área de texto
             self.text_widget.setFont(font)
-            self.text_widget.setFont(QFont("Noto Mono", 10))
+
+            # Guardar la fuente seleccionada en la configuración
+            self.config['font_family'] = font.family()
+            self.config['font_size'] = font.pointSize()
+            self.save_config()
 
     def init_ui(self):
         central_widget = QWidget()
@@ -47,6 +56,12 @@ class TextScrollerApp(QMainWindow):
         layout = QVBoxLayout(central_widget)
 
         self.text_widget = CustomTextEdit()
+
+        # Aplicar la fuente predeterminada desde la configuración
+        default_font = self.config.get('font_family', 'Noto Mono')
+        default_font_size = self.config.get('font_size', 10)
+        self.text_widget.setFont(QFont(default_font, default_font_size))
+
         layout.addWidget(self.text_widget)
 
         control_layout = QHBoxLayout()
