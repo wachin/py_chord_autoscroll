@@ -1,0 +1,9 @@
+
+
+  fonts-lyx isympy-common isympy3 libboost-dev libboost1.74-dev libfl2 libgmp-dev libgmpxx4ldbl
+  libgnutls-dane0 libgnutls-openssl27 libgnutlsxx30 libidn2-dev libjpeg62-turbo-dev libjs-jquery-ui
+  liblbfgsb0 libopenblas-dev libopenblas-pthread-dev libopenblas0 libp11-kit-dev libpython3-all-dev
+  libtasn1-6-dev libtasn1-doc libunbound8 libxsimd-dev nettle-dev python-matplotlib-data python3-all-dev
+  python3-appdirs python3-beniget python3-contourpy python3-cycler python3-fonttools python3-fs python3-gast
+  python3-kiwisolver python3-lz4 python3-mpmath python3-pythran python3-scipy python3-sympy python3-ufolib2
+  unicode-data
