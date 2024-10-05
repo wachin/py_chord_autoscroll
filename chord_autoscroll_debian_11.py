@@ -6,9 +6,9 @@ import json
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QWidget, QPushButton, QLabel, QSlider, QFileDialog, QMenuBar,
-                             QMenu, QMessageBox, QInputDialog, QFontDialog)
+                             QMenu, QMessageBox, QInputDialog, QFontDialog, QAction)
 from PyQt5.QtCore import Qt, QTimer, QUrl
-from PyQt5.QtGui import QAction, QDragEnterEvent, QDropEvent
+from PyQt5.QtGui import QDragEnterEvent, QDropEvent
 
 class CustomTextEdit(QTextEdit):
     def __init__(self, parent=None):
