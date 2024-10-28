@@ -11,16 +11,33 @@ Este manual está diseñado para guiar a guitarristas en la instalación y uso d
 ### 1. **Instalación de dependencias**
 Antes de ejecutar el programa, necesitas asegurarte de que ciertos paquetes estén instalados en tu sistema. Ejecuta el siguiente comando en la terminal para instalar las dependencias necesarias:
 
+**Para Debian 12 (ejemplo MX Linux 23)**
+
 ```bash
 sudo apt-get install python3-tk tk-dev python3 python3-pyqt6 tkdnd python3-mpmath python3-simplejson python3-all-dev fonts-noto-mono
+```
+
+**Para Debian 11 (ejemplo MX Linux 21)**
+
+```bash
+sudo apt-get install python3-tk tk-dev python3 python3-pyqt5 tkdnd python3-mpmath python3-simplejson python3-all-dev fonts-noto-mono
 ```
 
 ### 2. **Ejecutar el programa**
 Una vez instaladas las dependencias, puedes ejecutar el programa desde la terminal. Navega a la carpeta donde se encuentra el archivo `chord_autoscroll.py` y usa el siguiente comando:
 
+Para Debian 12:
+
 ```bash
-python3 chord_autoscroll.py
+python3 chord_autoscroll_debian_12.py
 ```
+
+Para Debian 11:
+
+```bash
+python3 chord_autoscroll_debian_11.py
+```
+
 
 así como en la siguiente captura de pantalla:
 
