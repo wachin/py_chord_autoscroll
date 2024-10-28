@@ -3,12 +3,12 @@ import os
 import math
 import re
 import json
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QWidget, QPushButton, QLabel, QSlider, QFileDialog, QMenuBar,
                              QMenu, QMessageBox, QInputDialog, QFontDialog)
-from PyQt5.QtCore import Qt, QTimer, QUrl
-from PyQt5.QtGui import QAction, QDragEnterEvent, QDropEvent
+from PyQt6.QtCore import Qt, QTimer, QUrl
+from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent
 
 class CustomTextEdit(QTextEdit):
     def __init__(self, parent=None):
@@ -23,10 +23,10 @@ class TextScrollerApp(QMainWindow):
 
         self.current_file = None
         self.is_scrolling = False
-        self.max_speed = 400  # Velocidad máxima predeterminada
+        self.max_speed = 100  # Velocidad máxima predeterminada
         self.scroll_speed = self.calculate_speed(15)  # Velocidad predeterminada
 
-        self.config_file = 'config12.json'
+        self.config_file = 'config.json'
 
         # Inicializar configuración antes de usarla
         self.config = {}
