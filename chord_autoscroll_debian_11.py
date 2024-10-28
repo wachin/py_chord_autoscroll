@@ -26,7 +26,7 @@ class TextScrollerApp(QMainWindow):
         self.max_speed = 400  # Velocidad máxima predeterminada
         self.scroll_speed = self.calculate_speed(15)  # Velocidad predeterminada
 
-        self.config_file = 'configtk.json'
+        self.config_file = 'config11.json'
 
         # Inicializar configuración antes de usarla
         self.config = {}

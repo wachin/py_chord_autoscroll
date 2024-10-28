@@ -77,6 +77,17 @@ El programa te permite desplazarte automáticamente por la letra y acordes de la
 ### 4. **Cambiar fuente**
 El programa ofrece la posibilidad de personalizar la fuente de los acordes. En el menú "Opciones > Cambiar fuente", puedes seleccionar la fuente de tu preferencia. Por defecto, se utiliza una fuente monoespaciada **Noto Mono**, perfecta para asegurar la correcta alineación de los acordes.
 
+### 5. **Cambiar y guardar la velocidad de desplazamiento**
+El programa ofrece la posibilidad de cambiar la velociad. En el menú "Opciones > Cambiar velocidad máxima", puedes seleccionar puedes aumentar el número que allí aparece lo que hará que la velocidad de desplazamiento sea más baja, esto funciona bien en Sistemas Operativos Debian 12 y basados en el como MX Linux 23, antiX 23, etc, pero en Debian 11 y basados no se guarda la velocidad, pero la puedes modificar editando:
+
+chord_autoscroll_debian_11.py
+
+y modificando la línea:
+
+        self.max_speed = 400  # Velocidad máxima predeterminada
+
+aumenta la cantidad 400 a ejemplo 450 y así probando
+
 ---
 
 ### 5. He hecho un Cancionero con muchas alabanzas que usamos en la Iglesia
