@@ -1,4 +1,4 @@
-### Manual de Instalación y Uso del Programa para Guitarristas en Linux Debian 12, MX Linux 23, antiX 23
+### Manual de Instalación y Uso del Programa para Guitarristas en Linux Debian 12, MX Linux 23
 
 Este manual está diseñado para guiar a guitarristas en la instalación y uso del programa de auto-scroll y transposición de acordes en Linux Debian 12, MX Linux 23. Con este programa, podrás cargar tus canciones con acordes, transportarlos fácilmente y desplazarte automáticamente por el texto, ¡perfecto para tus ensayos!
 
@@ -17,6 +17,12 @@ Antes de ejecutar el programa, necesitas asegurarte de que ciertos paquetes est�
 sudo apt-get install python3 python3-pyqt6 python3-mpmath python3-simplejson python3-all-dev fonts-noto-mono
 ```
 
+**Para Debian 11 (ejemplo MX Linux 21, antiX21, etc)**
+
+```bash
+sudo apt-get install python3 python3-pyqt5 python3-mpmath python3-simplejson python3-all-dev fonts-noto-mono
+```
+
 ### 2. **Ejecutar el programa**
 Una vez instaladas las dependencias, puedes ejecutar el programa desde la terminal. Navega a la carpeta donde se encuentra el archivo `chord_autoscroll.py` y usa el siguiente comando:
 
@@ -25,6 +31,13 @@ Para Debian 12:
 ```bash
 python3 chord_autoscroll_debian_12.py
 ```
+
+Para Debian 11:
+
+```bash
+python3 chord_autoscroll_debian_11.py
+```
+
 
 así como en la siguiente captura de pantalla:
 
@@ -65,7 +78,15 @@ El programa te permite desplazarte automáticamente por la letra y acordes de la
 El programa ofrece la posibilidad de personalizar la fuente de los acordes. En el menú "Opciones > Cambiar fuente", puedes seleccionar la fuente de tu preferencia. Por defecto, se utiliza una fuente monoespaciada **Noto Mono**, perfecta para asegurar la correcta alineación de los acordes.
 
 ### 5. **Cambiar y guardar la velocidad de desplazamiento**
-El programa ofrece la posibilidad de cambiar la velociad. En el menú "Opciones > Cambiar velocidad máxima", puedes seleccionar puedes aumentar el número que allí aparece lo que hará que la velocidad de desplazamiento sea más baja, esto funciona bien en Sistemas Operativos Debian 12 y basados en el como MX Linux 23, antiX 23, etc
+El programa ofrece la posibilidad de cambiar la velociad. En el menú "Opciones > Cambiar velocidad máxima", puedes seleccionar puedes aumentar el número que allí aparece lo que hará que la velocidad de desplazamiento sea más baja, esto funciona bien en Sistemas Operativos Debian 12 y basados en el como MX Linux 23, antiX 23, etc, pero en Debian 11 y basados no se guarda la velocidad, pero la puedes modificar editando:
+
+chord_autoscroll_debian_11.py
+
+y modificando la línea:
+
+        self.max_speed = 400  # Velocidad máxima predeterminada
+
+aumenta la cantidad 400 a ejemplo 450 y así probando
 
 ---
 
