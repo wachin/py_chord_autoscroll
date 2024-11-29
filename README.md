@@ -1,5 +1,7 @@
 ### Manual de Instalación y Uso del Programa para Guitarristas en Linux Debian 12, MX Linux 23, antiX 23
 
+Este programa es ideal para guitarristas que necesitan gestionar archivos de canciones y ajustar los acordes rápidamente durante ensayos o presentaciones. Con características de auto-scroll y transposición, tendrás todas las herramientas necesarias a tu disposición.
+
 Este manual está diseñado para guiar a guitarristas en la instalación y uso del programa de auto-scroll y transposición de acordes en Linux Debian 12, MX Linux 23. Con este programa, podrás cargar tus canciones con acordes, transportarlos fácilmente y desplazarte automáticamente por el texto, ¡perfecto para tus ensayos!
 
 **Nota:** Es posible funcione en Ubuntu 24.04, Linux Mint y otros.
@@ -105,17 +107,26 @@ También revise el diccionario de acordes:
 
 ---
 
-## **Consideraciones Finales**
+## Atajos Asignados  
+Los siguientes son los atajos de teclado que le he puesto:
 
-Este programa es ideal para guitarristas que necesitan gestionar archivos de canciones y ajustar los acordes rápidamente durante ensayos o presentaciones. Con características de auto-scroll y transposición, tendrás todas las herramientas necesarias a tu disposición.
-
-Si tienes alguna dificultad o preguntas, puedes contactar al desarrollador.
+| Función                  | Atajo         |
+|--------------------------|---------------|
+| Nuevo archivo            | `Ctrl+N`      |
+| Abrir archivo            | `Ctrl+O`      |
+| Guardar archivo          | `Ctrl+S`      |
+| Guardar como             | `Ctrl+Shift+S`|
+| Salir                    | `Ctrl+Q`      |
+| Seleccionar todo          | `Ctrl+A`      |
+| Cambiar fuente           | `Ctrl+F`      |
+| Cambiar velocidad máxima | `Ctrl+Shift+V`|
+| Acerca de                | `Ctrl+H`      |
 
 ---
 
 ### **Notas sobre las dependencias:**
 
-Si encuentras que falta alguna dependencia en tu sistema, puedes agregarla mediante el comando `apt-get` de forma similar. El programa depende principalmente de **Python 3**, **PyQt6** y algunas bibliotecas adicionales para manejo de fuentes y archivos.
+Si encuentras que falta alguna dependencia en tu sistema (esto lo podrías ver cuando abras el programa desde la terminal), puedes agregarla mediante el comando `apt-get` de forma similar. El programa depende principalmente de **Python 3**, **PyQt6** y algunas bibliotecas adicionales para manejo de fuentes y archivos.
 
 ---
 
