@@ -121,6 +121,8 @@ Los siguientes son los atajos de teclado que le he puesto:
 | Cambiar fuente           | `Ctrl+F`      |
 | Cambiar velocidad máxima | `Ctrl+Shift+V`|
 | Acerca de                | `Ctrl+H`      |
+| Deshacer	| Ctrl+Z |
+| Rehacer	| Ctrl+Shift+Z |
 
 ---
 
