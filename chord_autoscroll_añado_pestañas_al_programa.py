@@ -257,8 +257,16 @@ class TextScrollerApp(QMainWindow):
             try:
                 with open(file_path, 'r', encoding='utf-8') as file:
                     content = file.read()
-                # Crear una nueva pestaña con el contenido del archivo
-                self.add_new_tab(file_name=os.path.basename(file_path), content=content)
+
+                current_widget = self.get_current_text_widget()
+                if current_widget and not current_widget.toPlainText().strip():
+                    # Si la pestaña actual está vacía, cargar el contenido aquí
+                    current_widget.setPlainText(content)
+                    index = self.tab_widget.indexOf(current_widget)
+                    self.tab_widget.setTabText(index, os.path.basename(file_path))
+                else:
+                    # Si la pestaña actual no está vacía, abrir en una nueva pestaña
+                    self.add_new_tab(file_name=os.path.basename(file_path), content=content)
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
         else:
@@ -277,7 +285,16 @@ class TextScrollerApp(QMainWindow):
             try:
                 with open(file_path, 'r', encoding='utf-8') as file:
                     content = file.read()
-                self.add_new_tab(file_name=os.path.basename(file_path), content=content)
+
+                current_widget = self.get_current_text_widget()
+                if current_widget and not current_widget.toPlainText().strip():
+                    # Si la pestaña actual está vacía, cargar el contenido aquí
+                    current_widget.setPlainText(content)
+                    index = self.tab_widget.indexOf(current_widget)
+                    self.tab_widget.setTabText(index, os.path.basename(file_path))
+                else:
+                    # Si la pestaña actual no está vacía, abrir en una nueva pestaña
+                    self.add_new_tab(file_name=os.path.basename(file_path), content=content)
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
 
