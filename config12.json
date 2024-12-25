@@ -1,1 +1,6 @@
-{"max_speed": 100, "font_family": "Noto Mono", "font_size": 11}
+{
+    "max_speed": 100,
+    "font_family": "Noto Mono",
+    "font_size": 11,
+    "last_slider_position": 8
+}
