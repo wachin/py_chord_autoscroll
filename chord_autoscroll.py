@@ -6,7 +6,7 @@ import json
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QWidget, QPushButton, QLabel, QSlider, QFileDialog, QMenuBar,
-                             QMenu, QMessageBox, QInputDialog, QFontDialog)
+                             QMenu, QMessageBox, QInputDialog, QFontDialog, QTabWidget)
 from PyQt6.QtCore import Qt, QTimer, QUrl
 from PyQt6.QtGui import QAction, QDragEnterEvent, QDropEvent
 from PyQt6.QtGui import QTextCursor
@@ -41,7 +41,7 @@ class TextScrollerApp(QMainWindow):
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Lector y Editor de Texto")
+        self.setWindowTitle("Lector y Editor de Letras con Acordes")
         self.setGeometry(100, 100, 800, 500)
 
         self.current_file = None
@@ -66,7 +66,10 @@ class TextScrollerApp(QMainWindow):
         # Si el usuario selecciona una fuente y presiona OK
         if ok:
             # Aplicar la fuente seleccionada al área de texto
-            self.text_widget.setFont(font)
+            current_widget = self.get_current_text_widget()
+            if current_widget:
+                current_widget.setFont(font)
+
 
             # Guardar la fuente seleccionada en la configuración
             self.config['font_family'] = font.family()
@@ -78,15 +81,16 @@ class TextScrollerApp(QMainWindow):
         self.setCentralWidget(central_widget)
         layout = QVBoxLayout(central_widget)
 
-        self.text_widget = CustomTextEdit()
+        # Contenedor de pestañas
+        self.tab_widget = QTabWidget()
+        self.tab_widget.setTabsClosable(True)
+        self.tab_widget.tabCloseRequested.connect(self.close_tab)
+        layout.addWidget(self.tab_widget)
 
-        # Aplicar la fuente predeterminada desde la configuración
-        default_font = self.config.get('font_family', 'Noto Mono')
-        default_font_size = self.config.get('font_size', 10)
-        self.text_widget.setFont(QFont(default_font, default_font_size))
+        # Crear la primera pestaña
+        self.add_new_tab()
 
-        layout.addWidget(self.text_widget)
-
+        # Controles para desplazamiento y transposición
         control_layout = QHBoxLayout()
         layout.addLayout(control_layout)
 
@@ -121,14 +125,46 @@ class TextScrollerApp(QMainWindow):
 
         self.setAcceptDrops(True)
 
+    def add_new_tab(self, file_name=None, content=""):
+        # Crear un nuevo área de texto
+        text_widget = CustomTextEdit()
+        text_widget.setUndoRedoEnabled(True)
+
+        # Aplicar la fuente predeterminada desde la configuración
+        default_font = self.config.get('font_family', 'Noto Mono')
+        default_font_size = self.config.get('font_size', 10)
+        text_widget.setFont(QFont(default_font, default_font_size))
+
+        # Cargar contenido si se proporciona
+        if content:
+            text_widget.setPlainText(content)
+
+        # Agregar el área de texto como nueva pestaña
+        tab_name = file_name if file_name else "Nuevo archivo"
+        self.tab_widget.addTab(text_widget, tab_name)
+
+        # Establecer como la pestaña activa
+        self.tab_widget.setCurrentWidget(text_widget)
+
+    def close_tab(self, index):
+        # Cerrar la pestaña en el índice dado
+        self.tab_widget.removeTab(index)
+
+    def get_current_text_widget(self):
+        # Obtener el área de texto de la pestaña activa
+        widget = self.tab_widget.currentWidget()
+        if isinstance(widget, CustomTextEdit):
+            return widget
+        return None
+
     def create_menu_bar(self):
         menu_bar = self.menuBar()
 
+        # Menú Archivo
         file_menu = menu_bar.addMenu("Archivo")
-        # ... Opciones del menú Archivo ...
 
         new_action = QAction("Nuevo archivo", self)
-        new_action.triggered.connect(self.new_file)
+        new_action.triggered.connect(self.add_new_tab)
         new_action.setShortcut("Ctrl+N")  # Atajo: Ctrl+N
         file_menu.addAction(new_action)
 
@@ -143,7 +179,7 @@ class TextScrollerApp(QMainWindow):
         file_menu.addAction(save_action)
 
         save_as_action = QAction("Guardar como", self)
-        save_as_action.triggered.connect(self.save_file_as)
+        save_as_action.triggered.connect(self.save_file)
         save_as_action.setShortcut("Ctrl+Shift+S")  # Atajo: Ctrl+Shift+S
         file_menu.addAction(save_as_action)
 
@@ -153,47 +189,47 @@ class TextScrollerApp(QMainWindow):
         exit_action.triggered.connect(self.close)
         exit_action.setShortcut("Ctrl+Q")  # Atajo: Ctrl+Q
         file_menu.addAction(exit_action)
-        
+
         # Menú Editar
         edit_menu = menu_bar.addMenu("Editar")
 
-        # ... Acciones de "Deshacer" y "Rehacer"
         undo_action = QAction("Deshacer", self)
-        undo_action.triggered.connect(self.text_widget.undo)
+        undo_action.triggered.connect(lambda: self.get_current_text_widget().undo())
         undo_action.setShortcut("Ctrl+Z")  # Atajo: Ctrl+Z
         edit_menu.addAction(undo_action)
 
         redo_action = QAction("Rehacer", self)
-        redo_action.triggered.connect(self.text_widget.redo)
+        redo_action.triggered.connect(lambda: self.get_current_text_widget().redo())
         redo_action.setShortcut("Ctrl+Shift+Z")  # Atajo: Ctrl+Shift+Z
         edit_menu.addAction(redo_action)
-        
-        # ... Opciones del menú Editar ...
+
         select_all_action = QAction("Seleccionar todo", self)
-        select_all_action.triggered.connect(self.text_widget.selectAll)
+        select_all_action.triggered.connect(lambda: self.get_current_text_widget().selectAll())
         select_all_action.setShortcut("Ctrl+A")  # Atajo: Ctrl+A
         edit_menu.addAction(select_all_action)
 
+        # Menú Opciones
         options_menu = menu_bar.addMenu("Opciones")
-        # ... Opciones del menú Opciones ...
-        
-        help_menu = menu_bar.addMenu("Ayuda")
-        about_action = QAction("Acerca de...", self)
-        about_action.triggered.connect(self.show_about_dialog)
-        about_action.setShortcut("Ctrl+H")  # Atajo: Ctrl+H
-        help_menu.addAction(about_action)
 
         # ... Opción de cambiar la fuente
         change_font_action = QAction("Cambiar fuente", self)
         change_font_action.triggered.connect(self.select_font)
-        change_font_action.setShortcut("Ctrl+F")  # Atajo: Ctrl+F
+        change_font_action.setShortcut("Ctrl+F")
         options_menu.addAction(change_font_action)
-        
+
         # ... Opción de cambiar la velocidad máxima
         change_speed_action = QAction("Cambiar velocidad máxima", self)
         change_speed_action.triggered.connect(self.change_max_speed)
-        change_speed_action.setShortcut("Ctrl+Shift+V")  # Atajo: Ctrl+Shift+V
+        change_speed_action.setShortcut("Ctrl+Shift+V")
         options_menu.addAction(change_speed_action)
+
+        # Menú Ayuda
+        help_menu = menu_bar.addMenu("Ayuda")
+
+        about_action = QAction("Acerca de...", self)
+        about_action.triggered.connect(self.show_about_dialog)
+        about_action.setShortcut("Ctrl+H")
+        help_menu.addAction(about_action)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
@@ -218,43 +254,83 @@ class TextScrollerApp(QMainWindow):
 
     def open_dropped_file(self, file_path):
         if os.path.exists(file_path) and file_path.lower().endswith('.txt'):
-            self.load_file(file_path)
+            try:
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    content = file.read()
+
+                current_widget = self.get_current_text_widget()
+                if current_widget and not current_widget.toPlainText().strip():
+                    # Si la pestaña actual está vacía, cargar el contenido aquí
+                    current_widget.setPlainText(content)
+                    index = self.tab_widget.indexOf(current_widget)
+                    self.tab_widget.setTabText(index, os.path.basename(file_path))
+                else:
+                    # Si la pestaña actual no está vacía, abrir en una nueva pestaña
+                    self.add_new_tab(file_name=os.path.basename(file_path), content=content)
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
         else:
             QMessageBox.warning(self, "Error", "El archivo no es válido o no existe.")
 
     def new_file(self):
-        self.text_widget.clear()
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.clear()
         self.current_file = None
         self.setWindowTitle("Lector y Editor de Texto - Nuevo archivo")
 
     def open_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Abrir archivo", "", "Archivos de texto (*.txt)")
         if file_path:
-            self.load_file(file_path)
+            try:
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    content = file.read()
+
+                current_widget = self.get_current_text_widget()
+                if current_widget and not current_widget.toPlainText().strip():
+                    # Si la pestaña actual está vacía, cargar el contenido aquí
+                    current_widget.setPlainText(content)
+                    index = self.tab_widget.indexOf(current_widget)
+                    self.tab_widget.setTabText(index, os.path.basename(file_path))
+                else:
+                    # Si la pestaña actual no está vacía, abrir en una nueva pestaña
+                    self.add_new_tab(file_name=os.path.basename(file_path), content=content)
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
 
     def load_file(self, file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
-                self.text_widget.setPlainText(content)
+                current_widget = self.get_current_text_widget()
+                if current_widget:
+                    current_widget.setPlainText(content)
             self.current_file = file_path
             self.setWindowTitle(f"Lector y Editor de Texto - {os.path.basename(file_path)}")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
 
     def save_file(self):
-        if self.current_file:
-            content = self.text_widget.toPlainText()
-            with open(self.current_file, 'w', encoding='utf-8') as file:
-                file.write(content)
-            QMessageBox.information(self, "Guardado", "Archivo guardado exitosamente.")
-        else:
-            self.save_file_as()
+        text_widget = self.get_current_text_widget()
+        if text_widget:
+            content = text_widget.toPlainText()
+            file_path, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", "", "Archivos de texto (*.txt)")
+            if file_path:
+                try:
+                    with open(file_path, 'w', encoding='utf-8') as file:
+                        file.write(content)
+                    index = self.tab_widget.indexOf(text_widget)
+                    self.tab_widget.setTabText(index, os.path.basename(file_path))
+                    QMessageBox.information(self, "Guardado", "Archivo guardado exitosamente.")
+                except Exception as e:
+                    QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
 
     def save_file_as(self):
         file_path, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", "", "Archivos de texto (*.txt)")
         if file_path:
-            content = self.text_widget.toPlainText()
+            current_widget = self.get_current_text_widget()
+            if current_widget:
+                content = current_widget.toPlainText()
             with open(file_path, 'w', encoding='utf-8') as file:
                 file.write(content)
             self.current_file = file_path
@@ -271,7 +347,9 @@ class TextScrollerApp(QMainWindow):
 
     def scroll_text(self):
         if self.is_scrolling:
-            scrollbar = self.text_widget.verticalScrollBar()
+            current_widget = self.get_current_text_widget()
+            if current_widget:
+                scrollbar = current_widget.verticalScrollBar()
             scrollbar.setValue(scrollbar.value() + 1)
             QTimer.singleShot(self.scroll_speed, self.scroll_text)
 
@@ -310,21 +388,29 @@ class TextScrollerApp(QMainWindow):
 
     def transpose_chords(self, semitones):
         # Guardar la posición actual del scroll
-        current_scroll_position = self.text_widget.verticalScrollBar().value()
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_scroll_position = current_widget.verticalScrollBar().value()
 
         # Obtener el contenido actual y transponerlo
-        content = self.text_widget.toPlainText()
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            content = current_widget.toPlainText()
         transposed_content = self.transpose_text(content, semitones)
 
         # Usar QTextCursor para reemplazar el texto sin perder el historial de deshacer
-        cursor = self.text_widget.textCursor()
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            cursor = current_widget.textCursor()
         cursor.beginEditBlock()  # Agrupa los cambios para que sean una sola acción de deshacer
         cursor.select(QTextCursor.SelectionType.Document)
         cursor.insertText(transposed_content)
         cursor.endEditBlock()
 
         # Restaurar la posición del scroll
-        self.text_widget.verticalScrollBar().setValue(current_scroll_position)
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.verticalScrollBar().setValue(current_scroll_position)
 
     def transpose_text(self, text, semitones):
         chord_pattern = r'\b[A-G](#|b)?(m|maj|min|dim|aug|sus|add)?[0-9]?(?!\w)'
