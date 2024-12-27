@@ -49,11 +49,11 @@ Existen dos maneras de cargar tus archivos de texto con acordes en el programa:
 
 **Ejemplos de archivos incluidos:**
 
-/Ejemplos/A quien iré - Luis Enrrique Espinosa (D).txt
-/Ejemplos/Canta al Señor - Vertical (C%23).txt
-/Ejemplos/El Espíritu de Dios - Hector Pinilla (E).txt
-/Ejemplos/La niña de tus ojos - Daniel Calveti (C).txt
-/Ejemplos/No hay lugar mas alto - Miel San Marcos (A).txt
+/Ejemplos/A quien iré - Luis Enrrique Espinosa (D).txt  
+/Ejemplos/Canta al Señor - Vertical (C%23).txt  
+/Ejemplos/El Espíritu de Dios - Hector Pinilla (E).txt  
+/Ejemplos/La niña de tus ojos - Daniel Calveti (C).txt  
+/Ejemplos/No hay lugar mas alto - Miel San Marcos (A).txt  
 
 ![](src/vx_images/04--Portada-la-niña-de-tus-ojos.png)
 
