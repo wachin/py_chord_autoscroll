@@ -1,25 +1,26 @@
-### Manual de Instalación y Uso del Programa para Guitarristas en Linux Debian 12, MX Linux 23, antiX 23
+# Manual de Instalación y Uso del Programa para Guitarristas en Linux Debian 12, MX Linux 23, antiX 23
 
-Este programa es ideal para guitarristas que necesitan gestionar archivos de canciones y ajustar los acordes rápidamente durante ensayos o presentaciones. Con características de auto-scroll y transposición, tendrás todas las herramientas necesarias a tu disposición.
+Este programa es ideal para guitarristas que necesitan gestionar archivos de canciones en formato de texto .txt y ajustar los acordes rápidamente durante ensayos. Con características de auto-scroll y transposición, tendrás todas las herramientas necesarias a tu disposición para poder adaptar una canción para tu voz.
 
-Este manual está diseñado para guiar a guitarristas en la instalación y uso del programa de auto-scroll y transposición de acordes en Linux Debian 12, MX Linux 23. Con este programa, podrás cargar tus canciones con acordes, transportarlos fácilmente y desplazarte automáticamente por el texto, ¡perfecto para tus ensayos!
+## Probado en:
+- Linux Debian 12
+- MX Linux 23
 
-**Nota:** Es posible funcione en Ubuntu 24.04, Linux Mint y otros.
 
 ---
 
-## **Instrucciones de Instalación**
+# Instrucciones de Instalación
 
-### 1. **Instalación de dependencias**
+## 1. Instalación de dependencias
 Antes de ejecutar el programa, necesitas asegurarte de que ciertos paquetes estén instalados en tu sistema. Ejecuta el siguiente comando en la terminal para instalar las dependencias necesarias:
 
-**Para Debian 12 (ejemplo MX Linux 23, antiX 23, etc)**
+**Para Debian 12, MX Linux 23, antiX 23)**
 
 ```bash
 sudo apt-get install python3 python3-pyqt6 python3-mpmath python3-simplejson python3-all-dev fonts-noto-mono
 ```
 
-### 2. **Ejecutar el programa**
+## 2. Ejecutar el programa
 Una vez instaladas las dependencias, puedes ejecutar el programa desde la terminal. Navega a la carpeta donde se encuentra el archivo `chord_autoscroll.py` y usa el siguiente comando:
 
 Para Debian 12:
@@ -31,6 +32,11 @@ python3 chord_autoscroll_debian_12.py
 así como en la siguiente captura de pantalla:
 
 ![](src/vx_images/01-lanzando-chord_autoscroll.py.webp)
+
+o si tu Distribución Linux cuenta con un lanzador de programas escritos en python como en MX Linux 23 con clic derecho:
+
+
+
 
 ---
 
