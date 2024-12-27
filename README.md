@@ -123,6 +123,8 @@ Los siguientes son los atajos de teclado que le he puesto:
 | Acerca de                | `Ctrl+H`      |
 | Deshacer	| Ctrl+Z |
 | Rehacer	| Ctrl+Shift+Z |
+| Iniciar Scroll	| Ctrl+Barra espaciadora |
+| Pausar Scroll	| Ctrl+Barra espaciadora |
 
 ---
 
