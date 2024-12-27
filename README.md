@@ -26,17 +26,17 @@ Una vez instaladas las dependencias, puedes ejecutar el programa desde la termin
 Para Debian 12:
 
 ```bash
-python3 chord_autoscroll_debian_12.py
+python3 chord_autoscroll.py
 ```
 
 así como en la siguiente captura de pantalla:
 
 ![](src/vx_images/01-lanzando-chord_autoscroll.py.webp)
 
-o si tu Distribución Linux cuenta con un lanzador de programas escritos en python como en MX Linux 23 con clic derecho:
+o si tu Distribución Linux cuenta con un lanzador de programas escritos en python como en MX Linux 23 con clic derecho en Thunar, o si deseas hacerlo en Dolphin instala mi [lanzador](https://facilitarelsoftwarelibre.blogspot.com/2024/08/anadir-dolphin-una-opcion-para-ejecutar-scrpts-en-python.html):
 
 
-
+![](src/vx_images/05-lanzador-python-para-dolphin.png)
 
 ---
 
@@ -49,12 +49,13 @@ Existen dos maneras de cargar tus archivos de texto con acordes en el programa:
 
 **Ejemplos de archivos incluidos:**
 
-- *La niña de tus ojos - Daniel Calveti (C).txt*
-- *Sana nuestra tierra - Marcos W. (F).txt*
-- *Sananos - Marcos W. (D).txt*
-- *Eres Todopoderoso (Bm).txt*
+/Ejemplos/A quien iré - Luis Enrrique Espinosa (D).txt
+/Ejemplos/Canta al Señor - Vertical (C%23).txt
+/Ejemplos/El Espíritu de Dios - Hector Pinilla (E).txt
+/Ejemplos/La niña de tus ojos - Daniel Calveti (C).txt
+/Ejemplos/No hay lugar mas alto - Miel San Marcos (A).txt
 
-![](src/vx_images/02-chord_autoscroll.py-con-Eres-Todopoderoso.webp)
+![](src/vx_images/04--Portada-la-niña-de-tus-ojos.png)
 
 ### 2. **Transponer acordes**
 El programa cuenta con un botón **"Transponer"**, ubicado en la esquina inferior derecha. Al hacer clic, se abrirá un menú donde puedes ajustar los semitonos de tus acordes:
@@ -136,7 +137,7 @@ Los siguientes son los atajos de teclado que le he puesto:
 
 ### **Notas sobre las dependencias:**
 
-Si encuentras que falta alguna dependencia en tu sistema (esto lo podrías ver cuando abras el programa desde la terminal), puedes agregarla mediante el comando `apt-get` de forma similar. El programa depende principalmente de **Python 3**, **PyQt6** y algunas bibliotecas adicionales para manejo de fuentes y archivos.
+Si encuentras que falta alguna dependencia en tu sistema (esto lo podrías ver cuando abras el programa desde la terminal), puedes agregarla mediante el comando `apt-get` de forma similar. El programa depende principalmente de **Python 3**, **PyQt6** y algunas bibliotecas adicionales para manejo de fuentes y archivos. Me comunica alguna cosa
 
 ---
 
