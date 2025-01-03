@@ -4,7 +4,7 @@ import math
 import re
 import json
 from PyQt6.QtGui import (QFont, QAction, QActionGroup, QDragEnterEvent, QDropEvent, QTextCursor,
-                        QShortcut, QKeySequence)
+                         QShortcut, QKeySequence)
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QWidget, QPushButton, QLabel, QSlider, QFileDialog, QMenuBar,
                              QMenu, QMessageBox, QInputDialog, QFontDialog, QTabWidget)
@@ -37,7 +37,7 @@ class TextScrollerApp(QMainWindow):
         dialog.setStandardButtons(QMessageBox.StandardButton.Ok)
         dialog.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
         dialog.exec()
-    
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Lector y Editor de Letras con Acordes")
@@ -228,7 +228,7 @@ class TextScrollerApp(QMainWindow):
 
         # Menú Opciones
         options_menu = menu_bar.addMenu("Opciones")
-        
+
         # Opción para usar sostenidos
         sharps_action = QAction("Usar Sostenidos al bajar semitonos", self)
         sharps_action.setCheckable(True)
@@ -242,7 +242,7 @@ class TextScrollerApp(QMainWindow):
         flats_action.setChecked(not self.config['use_sharps'])
         flats_action.triggered.connect(lambda: self.toggle_accidentals(False))
         options_menu.addAction(flats_action)
-        
+
         # Añadir un separador
         options_menu.addSeparator()
 
@@ -481,7 +481,7 @@ class TextScrollerApp(QMainWindow):
             ['C'], ['C#', 'Db'], ['D'], ['D#', 'Eb'], ['E'], ['F'],
             ['F#', 'Gb'], ['G'], ['G#', 'Ab'], ['A'], ['A#', 'Bb'], ['B']
         ]
-        
+
         use_sharps = self.config['use_sharps']
 
         def transpose_chord(chord, spaces_after):
@@ -497,7 +497,6 @@ class TextScrollerApp(QMainWindow):
 
             # Reconstruir el acorde con la nueva raíz
             return new_root + suffix, ' ' * spaces_after
-
 
         def is_chord_line(line):
             words = line.split()
@@ -545,14 +544,14 @@ class TextScrollerApp(QMainWindow):
                 'font_family': 'Noto Mono',  # Fuente predeterminada
                 'font_size': 10  # Tamaño de fuente predeterminado
             }
-            
+
         # Añadir la clave `use_sharps` con valor predeterminado True
         self.config['use_sharps'] = self.config.get('use_sharps', True)
 
     def save_config(self):
         with open(self.config_file, 'w') as f:
             json.dump(self.config, f, indent=4)  # Guardar con formato legible
-                        
+
     def toggle_accidentals(self, use_sharps):
         # Cambiar la configuración de uso de sostenidos o bemoles
         self.config['use_sharps'] = use_sharps

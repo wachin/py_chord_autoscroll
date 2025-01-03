@@ -4,7 +4,7 @@ import math
 import re
 import json
 from PyQt6.QtGui import (QFont, QAction, QActionGroup, QDragEnterEvent, QDropEvent, QTextCursor,
-                        QShortcut, QKeySequence)
+                         QShortcut, QKeySequence)
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QWidget, QPushButton, QLabel, QSlider, QFileDialog, QMenuBar,
                              QMenu, QMessageBox, QInputDialog, QFontDialog, QTabWidget)
@@ -37,7 +37,7 @@ class TextScrollerApp(QMainWindow):
         dialog.setStandardButtons(QMessageBox.StandardButton.Ok)
         dialog.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
         dialog.exec()
-    
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Lector y Editor de Letras con Acordes")
@@ -72,6 +72,7 @@ class TextScrollerApp(QMainWindow):
             if current_widget:
                 current_widget.setFont(font)
 
+
             # Guardar la fuente seleccionada en la configuración
             self.config['font_family'] = font.family()
             self.config['font_size'] = font.pointSize()
@@ -84,17 +85,12 @@ class TextScrollerApp(QMainWindow):
 
         # Contenedor de pestañas
         self.tab_widget = QTabWidget()
-        self.tab_widget.setTabsClosable(True)  # Habilitar botones de cierre en las pestañas
-        self.tab_widget.tabCloseRequested.connect(self.close_tab)  # Conectar el evento de cierre
-        self.tab_widget.currentChanged.connect(self.update_window_title)  # Actualizar título al cambiar de pestaña
+        self.tab_widget.setTabsClosable(True)
+        self.tab_widget.tabCloseRequested.connect(self.close_tab)
         layout.addWidget(self.tab_widget)
 
-        # Crear una pestaña inicial con el área de texto
-        self.text_widget = CustomTextEdit()
-        self.tab_widget.addTab(self.text_widget, "Nuevo archivo")
-
-        # Conectar la señal para actualizar el título al modificar el documento
-        self.text_widget.document().modificationChanged.connect(self.update_window_title)
+        # Crear la primera pestaña
+        self.add_new_tab()
 
         # Controles para desplazamiento y transposición
         control_layout = QHBoxLayout()
@@ -134,7 +130,6 @@ class TextScrollerApp(QMainWindow):
         shortcut.activated.connect(self.toggle_scroll)
 
         self.setAcceptDrops(True)
-        self.update_window_title()  # Inicializar la barra de título con el estado actual del archivo
 
     def toggle_scroll(self):
         if self.is_scrolling:
@@ -146,6 +141,9 @@ class TextScrollerApp(QMainWindow):
         # Crear un nuevo área de texto
         text_widget = CustomTextEdit()
         text_widget.setUndoRedoEnabled(True)
+        text_widget.document().setModified(False)  # Inicialmente no modificado
+
+        text_widget.textChanged.connect(self.on_text_changed)
 
         # Aplicar la fuente predeterminada desde la configuración
         default_font = self.config.get('font_family', 'Noto Mono')
@@ -169,11 +167,70 @@ class TextScrollerApp(QMainWindow):
         # Establecer como la pestaña activa
         self.tab_widget.setCurrentWidget(text_widget)
 
+        # Actualizar el título de la ventana
+        self.update_window_title()
+
+    def on_text_changed(self):
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            # Marcar el documento como modificado
+            current_widget.document().setModified(True)
+
+            # Actualizar el título de la ventana
+            self.update_window_title()
+
+    def update_window_title(self):
+        # Obtener el índice de la pestaña activa
+        current_index = self.tab_widget.currentIndex()
+
+        # Obtener el nombre del archivo asociado a la pestaña activa
+        file_path = self.opened_files.get(current_index, "Nuevo archivo")
+        file_name = os.path.basename(file_path) if file_path else "Nuevo archivo"
+
+        # Verificar si el documento tiene cambios no guardados
+        modified = "*" if self.get_current_text_widget().document().isModified() else ""
+
+        # Actualizar el título de la ventana
+        self.setWindowTitle(f"{file_name} {modified} - Lector y Editor de Letras con Acordes")
+
     def close_tab(self, index):
-        widget = self.tab_widget.widget(index)
-        if widget:
-            self.tab_widget.removeTab(index)
-            widget.deleteLater()
+        # Obtener el área de texto de la pestaña
+        current_widget = self.tab_widget.widget(index)
+        if isinstance(current_widget, CustomTextEdit) and current_widget.document().isModified():
+            # Mostrar cuadro de diálogo
+            reply = QMessageBox.question(
+                self, "Cerrar documento",
+                f'El documento "{self.tab_widget.tabText(index)}" ha sido modificado. '
+                "¿Desea guardar los cambios, o descartarlos?",
+                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
+            )
+            if reply == QMessageBox.Save:
+                self.tab_widget.setCurrentIndex(index)
+                self.save_file()  # Guardar cambios
+            elif reply == QMessageBox.Cancel:
+                return  # No cerrar la pestaña
+
+        # Cerrar la pestaña
+        self.tab_widget.removeTab(index)
+
+    def closeEvent(self, event):
+        for index in range(self.tab_widget.count()):
+            self.tab_widget.setCurrentIndex(index)
+            current_widget = self.tab_widget.widget(index)
+            if isinstance(current_widget, CustomTextEdit) and current_widget.document().isModified():
+                reply = QMessageBox.question(
+                    self, "Cerrar aplicación",
+                    f'El documento "{self.tab_widget.tabText(index)}" ha sido modificado. '
+                    "¿Desea guardar los cambios, o descartarlos?",
+                    QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
+                )
+                if reply == QMessageBox.Save:
+                    self.save_file()
+                elif reply == QMessageBox.Cancel:
+                    event.ignore()
+                    return
+
+        event.accept()
 
     def get_current_text_widget(self):
         # Obtener el área de texto de la pestaña activa
@@ -204,7 +261,7 @@ class TextScrollerApp(QMainWindow):
         file_menu.addAction(save_action)
 
         save_as_action = QAction("Guardar como", self)
-        save_as_action.triggered.connect(self.save_file)
+        save_as_action.triggered.connect(self.save_file_as)  # Llama a save_file_as en lugar de save_file
         save_as_action.setShortcut("Ctrl+Shift+S")  # Atajo: Ctrl+Shift+S
         file_menu.addAction(save_as_action)
 
@@ -235,7 +292,7 @@ class TextScrollerApp(QMainWindow):
 
         # Menú Opciones
         options_menu = menu_bar.addMenu("Opciones")
-        
+
         # Opción para usar sostenidos
         sharps_action = QAction("Usar Sostenidos al bajar semitonos", self)
         sharps_action.setCheckable(True)
@@ -249,7 +306,7 @@ class TextScrollerApp(QMainWindow):
         flats_action.setChecked(not self.config['use_sharps'])
         flats_action.triggered.connect(lambda: self.toggle_accidentals(False))
         options_menu.addAction(flats_action)
-        
+
         # Añadir un separador
         options_menu.addSeparator()
 
@@ -352,17 +409,11 @@ class TextScrollerApp(QMainWindow):
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
-
-            # Crear una nueva pestaña para este archivo
-            new_tab = CustomTextEdit()
-            new_tab.setPlainText(content)
-            self.tab_widget.addTab(new_tab, os.path.basename(file_path))
-            self.tab_widget.setCurrentWidget(new_tab)
-
+                current_widget = self.get_current_text_widget()
+                if current_widget:
+                    current_widget.setPlainText(content)
             self.current_file = file_path
-            new_tab.document().modificationChanged.connect(self.update_window_title)
-            self.update_window_title()
-
+            self.setWindowTitle(f"Lector y Editor de Texto - {os.path.basename(file_path)}")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
 
@@ -387,36 +438,41 @@ class TextScrollerApp(QMainWindow):
             # Si no hay ubicación conocida, mostrar "Guardar como"
             self.save_file_as()
 
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.document().setModified(False)  # Marcar como no modificado
+            self.update_window_title()  # Actualizar el título
+
     def save_file_as(self):
-        file_path, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", "", "Archivos de texto (*.txt)")
+        current_widget = self.get_current_text_widget()
+        if not current_widget:
+            QMessageBox.warning(self, "Error", "No hay ninguna pestaña activa para guardar.")
+            return
+
+        # Obtener el índice de la pestaña actual y el nombre del archivo asociado
+        index = self.tab_widget.currentIndex()
+        current_file_path = self.opened_files.get(index)
+        suggested_name = current_file_path if current_file_path else "Nuevo archivo.txt"
+
+        # Abrir el cuadro de diálogo de "Guardar como" con el nombre sugerido
+        file_path, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", suggested_name, "Archivos de texto (*.txt)")
         if file_path:
-            content = self.get_current_text_widget().toPlainText()
-            with open(file_path, 'w', encoding='utf-8') as file:
-                file.write(content)
-            self.current_file = file_path
+            try:
+                with open(file_path, 'w', encoding='utf-8') as file:
+                    file.write(current_widget.toPlainText())
 
-            # Actualizar el título de la pestaña activa
-            index = self.tab_widget.currentIndex()
-            self.tab_widget.setTabText(index, os.path.basename(file_path))
+                # Asociar la pestaña con la nueva ubicación
+                self.opened_files[index] = file_path
+                self.tab_widget.setTabText(index, os.path.basename(file_path))
 
-            self.get_current_text_widget().document().setModified(False)
-            self.update_window_title()
-            QMessageBox.information(self, "Guardado", "Archivo guardado exitosamente.")
+                QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
 
-    def update_window_title(self):
-        # Obtener la pestaña activa
-        current_widget = self.tab_widget.currentWidget()
-
-        if current_widget and isinstance(current_widget, CustomTextEdit):
-            # Obtener el nombre del archivo correspondiente a la pestaña activa
-            index = self.tab_widget.indexOf(current_widget)
-            tab_title = self.tab_widget.tabText(index)
-
-            # Verificar si el documento está modificado
-            modified_marker = "*" if current_widget.document().isModified() else ""
-            self.setWindowTitle(f"{tab_title}{modified_marker} - Lector y Editor de Texto")
-        else:
-            self.setWindowTitle("Nuevo archivo - Lector y Editor de Texto")
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.document().setModified(False)  # Marcar como no modificado
+            self.update_window_title()  # Actualizar el título
 
     def start_scrolling(self):
         if not self.is_scrolling:
@@ -499,7 +555,7 @@ class TextScrollerApp(QMainWindow):
             ['C'], ['C#', 'Db'], ['D'], ['D#', 'Eb'], ['E'], ['F'],
             ['F#', 'Gb'], ['G'], ['G#', 'Ab'], ['A'], ['A#', 'Bb'], ['B']
         ]
-        
+
         use_sharps = self.config['use_sharps']
 
         def transpose_chord(chord, spaces_after):
@@ -515,7 +571,6 @@ class TextScrollerApp(QMainWindow):
 
             # Reconstruir el acorde con la nueva raíz
             return new_root + suffix, ' ' * spaces_after
-
 
         def is_chord_line(line):
             words = line.split()
@@ -563,14 +618,14 @@ class TextScrollerApp(QMainWindow):
                 'font_family': 'Noto Mono',  # Fuente predeterminada
                 'font_size': 10  # Tamaño de fuente predeterminado
             }
-            
+
         # Añadir la clave `use_sharps` con valor predeterminado True
         self.config['use_sharps'] = self.config.get('use_sharps', True)
 
     def save_config(self):
         with open(self.config_file, 'w') as f:
             json.dump(self.config, f, indent=4)  # Guardar con formato legible
-                        
+
     def toggle_accidentals(self, use_sharps):
         # Cambiar la configuración de uso de sostenidos o bemoles
         self.config['use_sharps'] = use_sharps
