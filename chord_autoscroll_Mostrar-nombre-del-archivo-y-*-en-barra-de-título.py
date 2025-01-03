@@ -72,7 +72,6 @@ class TextScrollerApp(QMainWindow):
             if current_widget:
                 current_widget.setFont(font)
 
-
             # Guardar la fuente seleccionada en la configuración
             self.config['font_family'] = font.family()
             self.config['font_size'] = font.pointSize()
@@ -85,12 +84,17 @@ class TextScrollerApp(QMainWindow):
 
         # Contenedor de pestañas
         self.tab_widget = QTabWidget()
-        self.tab_widget.setTabsClosable(True)
-        self.tab_widget.tabCloseRequested.connect(self.close_tab)
+        self.tab_widget.setTabsClosable(True)  # Habilitar botones de cierre en las pestañas
+        self.tab_widget.tabCloseRequested.connect(self.close_tab)  # Conectar el evento de cierre
+        self.tab_widget.currentChanged.connect(self.update_window_title)  # Actualizar título al cambiar de pestaña
         layout.addWidget(self.tab_widget)
 
-        # Crear la primera pestaña
-        self.add_new_tab()
+        # Crear una pestaña inicial con el área de texto
+        self.text_widget = CustomTextEdit()
+        self.tab_widget.addTab(self.text_widget, "Nuevo archivo")
+
+        # Conectar la señal para actualizar el título al modificar el documento
+        self.text_widget.document().modificationChanged.connect(self.update_window_title)
 
         # Controles para desplazamiento y transposición
         control_layout = QHBoxLayout()
@@ -130,6 +134,7 @@ class TextScrollerApp(QMainWindow):
         shortcut.activated.connect(self.toggle_scroll)
 
         self.setAcceptDrops(True)
+        self.update_window_title()  # Inicializar la barra de título con el estado actual del archivo
 
     def toggle_scroll(self):
         if self.is_scrolling:
@@ -165,8 +170,10 @@ class TextScrollerApp(QMainWindow):
         self.tab_widget.setCurrentWidget(text_widget)
 
     def close_tab(self, index):
-        # Cerrar la pestaña en el índice dado
-        self.tab_widget.removeTab(index)
+        widget = self.tab_widget.widget(index)
+        if widget:
+            self.tab_widget.removeTab(index)
+            widget.deleteLater()
 
     def get_current_text_widget(self):
         # Obtener el área de texto de la pestaña activa
@@ -197,7 +204,7 @@ class TextScrollerApp(QMainWindow):
         file_menu.addAction(save_action)
 
         save_as_action = QAction("Guardar como", self)
-        save_as_action.triggered.connect(self.save_file_as)  # Llama a save_file_as en lugar de save_file
+        save_as_action.triggered.connect(self.save_file)
         save_as_action.setShortcut("Ctrl+Shift+S")  # Atajo: Ctrl+Shift+S
         file_menu.addAction(save_as_action)
 
@@ -345,11 +352,17 @@ class TextScrollerApp(QMainWindow):
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
-                current_widget = self.get_current_text_widget()
-                if current_widget:
-                    current_widget.setPlainText(content)
+
+            # Crear una nueva pestaña para este archivo
+            new_tab = CustomTextEdit()
+            new_tab.setPlainText(content)
+            self.tab_widget.addTab(new_tab, os.path.basename(file_path))
+            self.tab_widget.setCurrentWidget(new_tab)
+
             self.current_file = file_path
-            self.setWindowTitle(f"Lector y Editor de Texto - {os.path.basename(file_path)}")
+            new_tab.document().modificationChanged.connect(self.update_window_title)
+            self.update_window_title()
+
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
 
@@ -375,30 +388,35 @@ class TextScrollerApp(QMainWindow):
             self.save_file_as()
 
     def save_file_as(self):
-        current_widget = self.get_current_text_widget()
-        if not current_widget:
-            QMessageBox.warning(self, "Error", "No hay ninguna pestaña activa para guardar.")
-            return
-
-        # Obtener el índice de la pestaña actual y el nombre del archivo asociado
-        index = self.tab_widget.currentIndex()
-        current_file_path = self.opened_files.get(index)
-        suggested_name = current_file_path if current_file_path else "Nuevo archivo.txt"
-
-        # Abrir el cuadro de diálogo de "Guardar como" con el nombre sugerido
-        file_path, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", suggested_name, "Archivos de texto (*.txt)")
+        file_path, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", "", "Archivos de texto (*.txt)")
         if file_path:
-            try:
-                with open(file_path, 'w', encoding='utf-8') as file:
-                    file.write(current_widget.toPlainText())
+            content = self.get_current_text_widget().toPlainText()
+            with open(file_path, 'w', encoding='utf-8') as file:
+                file.write(content)
+            self.current_file = file_path
 
-                # Asociar la pestaña con la nueva ubicación
-                self.opened_files[index] = file_path
-                self.tab_widget.setTabText(index, os.path.basename(file_path))
+            # Actualizar el título de la pestaña activa
+            index = self.tab_widget.currentIndex()
+            self.tab_widget.setTabText(index, os.path.basename(file_path))
 
-                QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
-            except Exception as e:
-                QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
+            self.get_current_text_widget().document().setModified(False)
+            self.update_window_title()
+            QMessageBox.information(self, "Guardado", "Archivo guardado exitosamente.")
+
+    def update_window_title(self):
+        # Obtener la pestaña activa
+        current_widget = self.tab_widget.currentWidget()
+
+        if current_widget and isinstance(current_widget, CustomTextEdit):
+            # Obtener el nombre del archivo correspondiente a la pestaña activa
+            index = self.tab_widget.indexOf(current_widget)
+            tab_title = self.tab_widget.tabText(index)
+
+            # Verificar si el documento está modificado
+            modified_marker = "*" if current_widget.document().isModified() else ""
+            self.setWindowTitle(f"{tab_title}{modified_marker} - Lector y Editor de Texto")
+        else:
+            self.setWindowTitle("Nuevo archivo - Lector y Editor de Texto")
 
     def start_scrolling(self):
         if not self.is_scrolling:
