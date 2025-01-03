@@ -3,7 +3,7 @@ import os
 import math
 import re
 import json
-from PyQt6.QtGui import (QFont, QAction, QDragEnterEvent, QDropEvent, QTextCursor,
+from PyQt6.QtGui import (QFont, QAction, QActionGroup, QDragEnterEvent, QDropEvent, QTextCursor,
                         QShortcut, QKeySequence)
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QWidget, QPushButton, QLabel, QSlider, QFileDialog, QMenuBar,
@@ -228,6 +228,28 @@ class TextScrollerApp(QMainWindow):
 
         # Menú Opciones
         options_menu = menu_bar.addMenu("Opciones")
+        
+        # Opción para usar sostenidos
+        sharps_action = QAction("Usar Sostenidos al bajar semitonos", self)
+        sharps_action.setCheckable(True)
+        sharps_action.setChecked(self.config['use_sharps'])
+        sharps_action.triggered.connect(lambda: self.toggle_accidentals(True))
+        options_menu.addAction(sharps_action)
+
+        # Opción para usar bemoles
+        flats_action = QAction("Usar Bemoles al bajar semitonos", self)
+        flats_action.setCheckable(True)
+        flats_action.setChecked(not self.config['use_sharps'])
+        flats_action.triggered.connect(lambda: self.toggle_accidentals(False))
+        options_menu.addAction(flats_action)
+        
+        # Añadir un separador
+        options_menu.addSeparator()
+
+        # Agrupar las opciones para que sean mutuamente excluyentes
+        group = QActionGroup(self)
+        group.addAction(sharps_action)
+        group.addAction(flats_action)
 
         # ... Opción de cambiar la fuente
         change_font_action = QAction("Cambiar fuente", self)
@@ -454,6 +476,8 @@ class TextScrollerApp(QMainWindow):
             ['C'], ['C#', 'Db'], ['D'], ['D#', 'Eb'], ['E'], ['F'],
             ['F#', 'Gb'], ['G'], ['G#', 'Ab'], ['A'], ['A#', 'Bb'], ['B']
         ]
+        
+        use_sharps = self.config['use_sharps']
 
         def transpose_chord(chord, spaces_after):
             root = chord[0]
@@ -462,21 +486,13 @@ class TextScrollerApp(QMainWindow):
 
             current_index = next(i for i, group in enumerate(chord_base) if root + accidental in group)
             new_index = (current_index + semitones) % len(chord_base)
-            new_root = chord_base[new_index][0]
 
-            if len(chord_base[new_index]) > 1:
-                new_root = chord_base[new_index][0] if semitones > 0 else chord_base[new_index][1]
+            # Elegir entre sostenidos y bemoles según la configuración
+            new_root = chord_base[new_index][0] if self.config['use_sharps'] else chord_base[new_index][-1]
 
-            new_chord = new_root + suffix
+            # Reconstruir el acorde con la nueva raíz
+            return new_root + suffix, ' ' * spaces_after
 
-            # Ajustar espacios
-            if accidental and not ('#' in new_chord or 'b' in new_chord):
-                spaces_after += 1  # Añadir espacio al quitar # o b
-            elif not accidental and ('#' in new_chord or 'b' in new_chord):
-                if spaces_after > 0:
-                    spaces_after -= 0  # Quitar espacio al añadir # o b, solo si hay espacio disponible
-
-            return new_chord, ' ' * spaces_after
 
         def is_chord_line(line):
             words = line.split()
@@ -524,10 +540,18 @@ class TextScrollerApp(QMainWindow):
                 'font_family': 'Noto Mono',  # Fuente predeterminada
                 'font_size': 10  # Tamaño de fuente predeterminado
             }
+            
+        # Añadir la clave `use_sharps` con valor predeterminado True
+        self.config['use_sharps'] = self.config.get('use_sharps', True)
 
     def save_config(self):
         with open(self.config_file, 'w') as f:
             json.dump(self.config, f, indent=4)  # Guardar con formato legible
+                        
+    def toggle_accidentals(self, use_sharps):
+        # Cambiar la configuración de uso de sostenidos o bemoles
+        self.config['use_sharps'] = use_sharps
+        self.save_config()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
