@@ -153,6 +153,7 @@ class TextScrollerApp(QMainWindow):
         # Cargar contenido si se proporciona
         if content:
             text_widget.setPlainText(content)
+            text_widget.document().setModified(False)  # Marcar como no modificado
 
         # Agregar el área de texto como nueva pestaña
         tab_name = file_name if file_name else "Nuevo archivo"
@@ -202,12 +203,12 @@ class TextScrollerApp(QMainWindow):
                 self, "Cerrar documento",
                 f'El documento "{self.tab_widget.tabText(index)}" ha sido modificado. '
                 "¿Desea guardar los cambios, o descartarlos?",
-                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
+                QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel
             )
-            if reply == QMessageBox.Save:
+            if reply == QMessageBox.StandardButton.Save:
                 self.tab_widget.setCurrentIndex(index)
                 self.save_file()  # Guardar cambios
-            elif reply == QMessageBox.Cancel:
+            elif reply == QMessageBox.StandardButton.Cancel:
                 return  # No cerrar la pestaña
 
         # Cerrar la pestaña
@@ -222,11 +223,11 @@ class TextScrollerApp(QMainWindow):
                     self, "Cerrar aplicación",
                     f'El documento "{self.tab_widget.tabText(index)}" ha sido modificado. '
                     "¿Desea guardar los cambios, o descartarlos?",
-                    QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
+                    QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel
                 )
-                if reply == QMessageBox.Save:
+                if reply == QMessageBox.StandardButton.Save:
                     self.save_file()
-                elif reply == QMessageBox.Cancel:
+                elif reply == QMessageBox.StandardButton.Cancel:
                     event.ignore()
                     return
 
@@ -401,9 +402,12 @@ class TextScrollerApp(QMainWindow):
                 else:
                     # Si la pestaña actual no está vacía, abrir en una nueva pestaña
                     self.add_new_tab(file_name=os.path.basename(file_path), content=content, file_path=file_path)
+
+                # Actualizar el título de la ventana
+                self.update_window_title()
+
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
-
 
     def load_file(self, file_path):
         try:

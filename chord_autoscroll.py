@@ -141,6 +141,9 @@ class TextScrollerApp(QMainWindow):
         # Crear un nuevo área de texto
         text_widget = CustomTextEdit()
         text_widget.setUndoRedoEnabled(True)
+        text_widget.document().setModified(False)  # Inicialmente no modificado
+
+        text_widget.textChanged.connect(self.on_text_changed)
 
         # Aplicar la fuente predeterminada desde la configuración
         default_font = self.config.get('font_family', 'Noto Mono')
@@ -150,6 +153,7 @@ class TextScrollerApp(QMainWindow):
         # Cargar contenido si se proporciona
         if content:
             text_widget.setPlainText(content)
+            text_widget.document().setModified(False)  # Marcar como no modificado
 
         # Agregar el área de texto como nueva pestaña
         tab_name = file_name if file_name else "Nuevo archivo"
@@ -164,9 +168,70 @@ class TextScrollerApp(QMainWindow):
         # Establecer como la pestaña activa
         self.tab_widget.setCurrentWidget(text_widget)
 
+        # Actualizar el título de la ventana
+        self.update_window_title()
+
+    def on_text_changed(self):
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            # Marcar el documento como modificado
+            current_widget.document().setModified(True)
+
+            # Actualizar el título de la ventana
+            self.update_window_title()
+
+    def update_window_title(self):
+        # Obtener el índice de la pestaña activa
+        current_index = self.tab_widget.currentIndex()
+
+        # Obtener el nombre del archivo asociado a la pestaña activa
+        file_path = self.opened_files.get(current_index, "Nuevo archivo")
+        file_name = os.path.basename(file_path) if file_path else "Nuevo archivo"
+
+        # Verificar si el documento tiene cambios no guardados
+        modified = "*" if self.get_current_text_widget().document().isModified() else ""
+
+        # Actualizar el título de la ventana
+        self.setWindowTitle(f"{file_name} {modified} - Lector y Editor de Letras con Acordes")
+
     def close_tab(self, index):
-        # Cerrar la pestaña en el índice dado
+        # Obtener el área de texto de la pestaña
+        current_widget = self.tab_widget.widget(index)
+        if isinstance(current_widget, CustomTextEdit) and current_widget.document().isModified():
+            # Mostrar cuadro de diálogo
+            reply = QMessageBox.question(
+                self, "Cerrar documento",
+                f'El documento "{self.tab_widget.tabText(index)}" ha sido modificado. '
+                "¿Desea guardar los cambios, o descartarlos?",
+                QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel
+            )
+            if reply == QMessageBox.StandardButton.Save:
+                self.tab_widget.setCurrentIndex(index)
+                self.save_file()  # Guardar cambios
+            elif reply == QMessageBox.StandardButton.Cancel:
+                return  # No cerrar la pestaña
+
+        # Cerrar la pestaña
         self.tab_widget.removeTab(index)
+
+    def closeEvent(self, event):
+        for index in range(self.tab_widget.count()):
+            self.tab_widget.setCurrentIndex(index)
+            current_widget = self.tab_widget.widget(index)
+            if isinstance(current_widget, CustomTextEdit) and current_widget.document().isModified():
+                reply = QMessageBox.question(
+                    self, "Cerrar aplicación",
+                    f'El documento "{self.tab_widget.tabText(index)}" ha sido modificado. '
+                    "¿Desea guardar los cambios, o descartarlos?",
+                    QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel
+                )
+                if reply == QMessageBox.StandardButton.Save:
+                    self.save_file()
+                elif reply == QMessageBox.StandardButton.Cancel:
+                    event.ignore()
+                    return
+
+        event.accept()
 
     def get_current_text_widget(self):
         # Obtener el área de texto de la pestaña activa
@@ -337,9 +402,12 @@ class TextScrollerApp(QMainWindow):
                 else:
                     # Si la pestaña actual no está vacía, abrir en una nueva pestaña
                     self.add_new_tab(file_name=os.path.basename(file_path), content=content, file_path=file_path)
+
+                # Actualizar el título de la ventana
+                self.update_window_title()
+
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
-
 
     def load_file(self, file_path):
         try:
@@ -374,6 +442,11 @@ class TextScrollerApp(QMainWindow):
             # Si no hay ubicación conocida, mostrar "Guardar como"
             self.save_file_as()
 
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.document().setModified(False)  # Marcar como no modificado
+            self.update_window_title()  # Actualizar el título
+
     def save_file_as(self):
         current_widget = self.get_current_text_widget()
         if not current_widget:
@@ -399,6 +472,11 @@ class TextScrollerApp(QMainWindow):
                 QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
+
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.document().setModified(False)  # Marcar como no modificado
+            self.update_window_title()  # Actualizar el título
 
     def start_scrolling(self):
         if not self.is_scrolling:
