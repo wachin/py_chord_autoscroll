@@ -15,11 +15,6 @@ class CustomTextEdit(QTextEdit):
         super().__init__(parent)
         self.setAcceptDrops(False)  # Desactivar el manejo de drops por defecto
 
-    def focusInEvent(self, event):
-        # Ignorar el evento para evitar marcar el documento como modificado
-        super().focusInEvent(event)
-        self.document().setModified(False)  # Marcar como no modificado
-
 class TextScrollerApp(QMainWindow):
 # Dentro de la clase `TextScrollerApp`
     def show_about_dialog(self):
