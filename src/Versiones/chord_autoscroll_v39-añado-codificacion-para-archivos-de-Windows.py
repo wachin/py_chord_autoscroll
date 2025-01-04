@@ -23,7 +23,7 @@ class TextScrollerApp(QMainWindow):
             "<p>Este programa sirve para la transposición de acordes, podrás cargar tus canciones que contengan "
             "letras y acordes para transportarlas fácilmente y desplazarte automáticamente por el texto, "
             "para tus ensayos.</p>"
-            "<p>Copyright 2024  Washington Indacochea Delgado.<br>"
+            "<p>Copyright 2025  Washington Indacochea Delgado.<br>"
             "wachin.id@gmail.com<br>"
             "Licencia GPL 3</p>"
             "<p>Para más información revisa:</p>"
@@ -441,26 +441,30 @@ class TextScrollerApp(QMainWindow):
     def open_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Abrir archivo", "", "Archivos de texto (*.txt)")
         if file_path:
-            try:
-                with open(file_path, 'r', encoding='utf-8') as file:
-                    content = file.read()
+            encodings = ['utf-8', 'iso-8859-1', 'cp1252']  # Codificaciones comunes
+            for encoding in encodings:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as file:
+                        content = file.read()
+                    
+                    # Si la lectura fue exitosa, cargar el contenido en la pestaña actual
+                    current_widget = self.get_current_text_widget()
+                    if current_widget and not current_widget.toPlainText().strip():
+                        current_widget.setPlainText(content)
+                        index = self.tab_widget.indexOf(current_widget)
+                        self.tab_widget.setTabText(index, os.path.basename(file_path))
+                        self.opened_files[index] = file_path  # Registrar la ruta del archivo
+                    else:
+                        self.add_new_tab(file_name=os.path.basename(file_path), content=content, file_path=file_path)
 
-                current_widget = self.get_current_text_widget()
-                if current_widget and not current_widget.toPlainText().strip():
-                    # Si la pestaña actual está vacía, cargar el contenido aquí
-                    current_widget.setPlainText(content)
-                    index = self.tab_widget.indexOf(current_widget)
-                    self.tab_widget.setTabText(index, os.path.basename(file_path))
-                    self.opened_files[index] = file_path  # Registrar la ruta del archivo
-                else:
-                    # Si la pestaña actual no está vacía, abrir en una nueva pestaña
-                    self.add_new_tab(file_name=os.path.basename(file_path), content=content, file_path=file_path)
+                    # Actualizar el título de la ventana
+                    self.update_window_title()
+                    return  # Salir del bucle si se leyó correctamente
+                except UnicodeDecodeError:
+                    continue  # Intentar con la siguiente codificación
 
-                # Actualizar el título de la ventana
-                self.update_window_title()
-
-            except Exception as e:
-                QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
+            # Si todas las codificaciones fallan, mostrar un mensaje de error
+            QMessageBox.critical(self, "Error", "No se pudo abrir el archivo. Codificación no compatible.")
 
     def load_file(self, file_path):
         try:
@@ -488,7 +492,8 @@ class TextScrollerApp(QMainWindow):
             try:
                 with open(file_path, 'w', encoding='utf-8') as file:
                     file.write(current_widget.toPlainText())
-                QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
+                # Desabilito el mensaje de configuración al guardar cualquier archivo    
+                # QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
         else:
