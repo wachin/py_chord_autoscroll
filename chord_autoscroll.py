@@ -174,8 +174,18 @@ class TextScrollerApp(QMainWindow):
     def on_text_changed(self):
         current_widget = self.get_current_text_widget()
         if current_widget:
-            # Marcar el documento como modificado
-            current_widget.document().setModified(True)
+            # Comparar el texto actual con el texto guardado
+            current_text = current_widget.toPlainText()
+            file_path = self.opened_files.get(self.tab_widget.currentIndex(), None)
+            
+            if file_path and os.path.exists(file_path):
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    saved_text = f.read()
+            else:
+                saved_text = ""
+
+            is_modified = current_text != saved_text
+            current_widget.document().setModified(is_modified)
 
             # Actualizar el título de la ventana
             self.update_window_title()
