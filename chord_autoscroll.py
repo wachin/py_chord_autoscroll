@@ -240,6 +240,23 @@ class TextScrollerApp(QMainWindow):
             return widget
         return None
 
+        # Nueva función: Copiar
+    def copy_text(self):
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.copy()
+
+        # Nueva función: Pegar 
+    def paste_text(self):
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.paste()
+            
+    def cut_text(self):
+        current_widget = self.get_current_text_widget()
+        if current_widget:
+            current_widget.cut()
+
     def create_menu_bar(self):
         menu_bar = self.menuBar()
 
@@ -285,6 +302,28 @@ class TextScrollerApp(QMainWindow):
         redo_action.triggered.connect(lambda: self.get_current_text_widget().redo())
         redo_action.setShortcut("Ctrl+Shift+Z")  # Atajo: Ctrl+Shift+Z
         edit_menu.addAction(redo_action)
+        
+        # Añadir un separador
+        edit_menu.addSeparator()
+                
+        # Nueva opción: Copiar
+        copy_action = QAction("Copiar", self)
+        copy_action.triggered.connect(self.copy_text)
+        copy_action.setShortcut("Ctrl+C")  # Atajo de teclado: Ctrl+C
+        edit_menu.addAction(copy_action)
+        
+        # Nueva opción: Pegar
+        paste_action = QAction("Pegar", self)
+        paste_action.triggered.connect(self.paste_text)
+        paste_action.setShortcut("Ctrl+V")  # Atajo de teclado: Ctrl+V
+        edit_menu.addAction(paste_action)
+        
+        # Nueva opción: Cortar 
+                
+        cut_action = QAction("Cortar", self)
+        cut_action.triggered.connect(self.cut_text)
+        cut_action.setShortcut("Ctrl+X")  # Atajo de teclado: Ctrl+X
+        edit_menu.addAction(cut_action)
 
         select_all_action = QAction("Seleccionar todo", self)
         select_all_action.triggered.connect(lambda: self.get_current_text_widget().selectAll())
