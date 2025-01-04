@@ -23,7 +23,7 @@ class TextScrollerApp(QMainWindow):
             "<p>Este programa sirve para la transposición de acordes, podrás cargar tus canciones que contengan "
             "letras y acordes para transportarlas fácilmente y desplazarte automáticamente por el texto, "
             "para tus ensayos.</p>"
-            "<p>Copyright 2024  Washington Indacochea Delgado.<br>"
+            "<p>Copyright 2025  Washington Indacochea Delgado.<br>"
             "wachin.id@gmail.com<br>"
             "Licencia GPL 3</p>"
             "<p>Para más información revisa:</p>"
@@ -488,7 +488,8 @@ class TextScrollerApp(QMainWindow):
             try:
                 with open(file_path, 'w', encoding='utf-8') as file:
                     file.write(current_widget.toPlainText())
-                QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
+                # Desabilito el mensaje de configuración al guardar cualquier archivo    
+                # QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
         else:
