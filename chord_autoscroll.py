@@ -3,6 +3,7 @@ import os
 import math
 import re
 import json
+import chardet
 from PyQt6.QtGui import (QFont, QAction, QActionGroup, QDragEnterEvent, QDropEvent, QTextCursor,
                          QShortcut, QKeySequence)
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
@@ -49,6 +50,9 @@ class TextScrollerApp(QMainWindow):
         self.scroll_speed = self.calculate_speed(15)  # Velocidad predeterminada
 
         self.config_file = 'config12.json'
+
+        self.opened_files = {}  # Diccionario para rutas de archivos
+        self.file_encodings = {}  # Diccionario para guardar codificaciones
 
         # Inicializar configuración antes de usarla
         self.config = {}
@@ -122,6 +126,11 @@ class TextScrollerApp(QMainWindow):
         self.transpose_button = QPushButton("Transponer")
         self.transpose_button.clicked.connect(self.show_transpose_menu)
         control_layout.addWidget(self.transpose_button)
+        
+        # Añadir etiqueta para mostrar la codificación
+        self.encoding_label = QLabel("Codificación: UTF-8")
+        self.encoding_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.encoding_label)
 
         self.create_menu_bar()
 
@@ -129,7 +138,18 @@ class TextScrollerApp(QMainWindow):
         shortcut = QShortcut(QKeySequence("Ctrl+Space"), self)
         shortcut.activated.connect(self.toggle_scroll)
 
+        self.tab_widget.currentChanged.connect(self.update_encoding_label)  # Conectar evento
+
         self.setAcceptDrops(True)
+
+    def update_encoding_label(self, index):
+        print(f"Actualizando etiqueta para la pestaña {index}")
+        file_path = self.opened_files.get(index, None)
+        if file_path:
+            encoding = self.file_encodings.get(file_path, "Desconocida")
+            self.encoding_label.setText(f"Codificación: {encoding}")
+        else:
+            self.encoding_label.setText("Codificación: N/A")
 
     def toggle_scroll(self):
         if self.is_scrolling:
@@ -174,16 +194,18 @@ class TextScrollerApp(QMainWindow):
     def on_text_changed(self):
         current_widget = self.get_current_text_widget()
         if current_widget:
+            current_index = self.tab_widget.currentIndex()
+            file_path = self.opened_files.get(current_index)
+            encoding = self.file_encodings.get(file_path, 'utf-8')  # Usar codificación detectada o UTF-8
+
+            try:
+                with open(file_path, 'r', encoding=encoding) as f:
+                    saved_text = f.read()
+            except Exception as e:
+                saved_text = ""  # Si ocurre un error, asumir que el archivo está vacío
+
             # Comparar el texto actual con el texto guardado
             current_text = current_widget.toPlainText()
-            file_path = self.opened_files.get(self.tab_widget.currentIndex(), None)
-            
-            if file_path and os.path.exists(file_path):
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    saved_text = f.read()
-            else:
-                saved_text = ""
-
             is_modified = current_text != saved_text
             current_widget.document().setModified(is_modified)
 
@@ -441,30 +463,38 @@ class TextScrollerApp(QMainWindow):
     def open_file(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Abrir archivo", "", "Archivos de texto (*.txt)")
         if file_path:
-            encodings = ['utf-8', 'iso-8859-1', 'cp1252']  # Codificaciones comunes
-            for encoding in encodings:
-                try:
-                    with open(file_path, 'r', encoding=encoding) as file:
-                        content = file.read()
-                    
-                    # Si la lectura fue exitosa, cargar el contenido en la pestaña actual
-                    current_widget = self.get_current_text_widget()
-                    if current_widget and not current_widget.toPlainText().strip():
-                        current_widget.setPlainText(content)
-                        index = self.tab_widget.indexOf(current_widget)
-                        self.tab_widget.setTabText(index, os.path.basename(file_path))
-                        self.opened_files[index] = file_path  # Registrar la ruta del archivo
-                    else:
-                        self.add_new_tab(file_name=os.path.basename(file_path), content=content, file_path=file_path)
+            try:
+                # Detectar codificación del archivo
+                with open(file_path, 'rb') as file:
+                    raw_data = file.read()
+                    detected = chardet.detect(raw_data)
+                    encoding = detected['encoding'] or 'utf-8'  # Usar UTF-8 como fallback
 
-                    # Actualizar el título de la ventana
-                    self.update_window_title()
-                    return  # Salir del bucle si se leyó correctamente
-                except UnicodeDecodeError:
-                    continue  # Intentar con la siguiente codificación
+                # Leer archivo con la codificación detectada
+                with open(file_path, 'r', encoding=encoding, errors='replace') as file:
+                    content = file.read()
 
-            # Si todas las codificaciones fallan, mostrar un mensaje de error
-            QMessageBox.critical(self, "Error", "No se pudo abrir el archivo. Codificación no compatible.")
+                # Guardar la codificación detectada
+                self.file_encodings[file_path] = encoding
+                self.encoding_label.setText(f"Codificación: {encoding}")
+
+                current_widget = self.get_current_text_widget()
+                if current_widget and not current_widget.toPlainText().strip():
+                    current_widget.setPlainText(content)
+                    index = self.tab_widget.indexOf(current_widget)
+                    self.tab_widget.setTabText(index, os.path.basename(file_path))
+                    self.opened_files[index] = file_path
+                else:
+                    self.add_new_tab(file_name=os.path.basename(file_path), content=content, file_path=file_path)
+
+                # Actualizar la etiqueta de codificación según la pestaña activa
+                self.update_encoding_label(self.tab_widget.currentIndex())
+
+                # Actualizar el título de la ventana
+                self.update_window_title()
+
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
 
     def load_file(self, file_path):
         try:
