@@ -17,8 +17,55 @@ Antes de ejecutar el programa, necesitas asegurarte de que ciertos paquetes est�
 **Para Debian 12, MX Linux 23, antiX 23)**
 
 ```bash
-sudo apt-get install python3 python3-pyqt6 python3-mpmath python3-simplejson python3-all-dev fonts-noto-mono
+sudo apt-get install python3 python3-pyqt6 python3-mpmath \
+    python3-simplejson python3-all-dev \
+    fonts-noto-mono python3-chardet
 ```
+
+Explicación de para qué sirve cada una de las dependencias instaladas 😊:
+
+---
+
+### 1. **`python3`**
+   - **Descripción:** Instala el intérprete de Python 3.
+   - **Función:** Es la base para ejecutar programas escritos en Python.
+
+---
+
+### 2. **`python3-pyqt6`**
+   - **Descripción:** Es un conjunto de enlaces de Python para Qt 6, una biblioteca popular para crear interfaces gráficas.
+   - **Función:** Proporciona los componentes gráficos (ventanas, botones, menús, etc.) que se utilizan en el programa.
+   - **Ejemplo:** Permite crear ventanas principales, pestañas, etiquetas, y controles como el botón de "Iniciar" o la barra de desplazamiento.
+
+---
+
+### 3. **`python3-mpmath`**
+   - **Descripción:** Biblioteca para cálculos matemáticos con precisión arbitraria.
+---
+
+### 4. **`python3-simplejson`**
+   - **Descripción:** Biblioteca para trabajar con datos en formato JSON (JavaScript Object Notation).
+   - **Función:** Facilita la lectura y escritura de archivos de configuración o datos estructurados en JSON. Sirve para guardar configuraciones como la fuente, velocidad de desplazamiento, o preferencias del usuario.
+
+---
+
+### 5. **`python3-all-dev`**
+   - **Descripción:** Incluye archivos de desarrollo para Python 3, como cabeceras y herramientas necesarias para compilar extensiones en C/C++.
+   - **Función:** Es útil si necesitas compilar bibliotecas adicionales o trabajar en el desarrollo de módulos personalizados para Python.
+
+---
+
+### 6. **`fonts-noto-mono`**
+   - **Descripción:** Es un conjunto de fuentes monoespaciadas de alta calidad de la familia Noto.
+   - **Función:** Proporciona una fuente monoespaciada (usada comúnmente en editores de texto y código) para mostrar contenido de manera clara y legible. Es la fuente predeterminada para mostrar letras y acordes en el editor de texto.
+
+---
+
+### 7. **`python3-chardet`**
+   - **Descripción:** Biblioteca para detectar la codificación de archivos de texto.
+   - **Función:** Permite que tel programa identifique automáticamente la codificación de un archivo al abrirlo, asegurando que pueda manejar archivos en formatos como UTF-8, ISO-8859-1, o Windows-1252, y otros.
+
+---
 
 ## 2. Ejecutar el programa
 Una vez instaladas las dependencias, puedes ejecutar el programa desde la terminal. Navega a la carpeta donde se encuentra el archivo `chord_autoscroll.py` y usa el siguiente comando:
