@@ -63,6 +63,9 @@ class TextScrollerApp(QMainWindow):
 
         self.init_ui()
 
+        # Actualizar el menú "Abrir reciente" después de cargar la configuración
+        self.update_recent_files_menu()
+
     def select_font(self):
         # Abrir diálogo de selección de fuente
         font, ok = QFontDialog.getFont(QFont(self.config.get('font_family', 'Noto Mono'),
@@ -776,8 +779,8 @@ class TextScrollerApp(QMainWindow):
                 'max_speed': 100,
                 'font_family': 'Noto Mono',
                 'font_size': 10,
-                'last_opened_path': '',  # Última carpeta visitada
-                'recent_files': []  # Lista de archivos recientes
+                'last_opened_path': '',  # Valor predeterminado para la última ruta
+                'use_sharps': True
             }
 
     def save_config(self):
