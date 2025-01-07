@@ -431,23 +431,33 @@ class TextScrollerApp(QMainWindow):
     def open_dropped_file(self, file_path):
         if os.path.exists(file_path) and file_path.lower().endswith('.txt'):
             try:
-                with open(file_path, 'r', encoding='utf-8') as file:
+                # Detectar la codificación del archivo
+                with open(file_path, 'rb') as file:
+                    raw_data = file.read()
+                    detected = chardet.detect(raw_data)
+                    encoding = detected['encoding'] or 'utf-8'  # Usar UTF-8 como predeterminado
+
+                # Leer el archivo con la codificación detectada
+                with open(file_path, 'r', encoding=encoding, errors='replace') as file:
                     content = file.read()
 
+                # Guardar la codificación detectada
+                self.file_encodings[file_path] = encoding
+                self.encoding_label.setText(f"Codificación: {encoding}")
+
+                # Cargar el contenido en la pestaña actual o abrir una nueva
                 current_widget = self.get_current_text_widget()
                 if current_widget and not current_widget.toPlainText().strip():
-                    # Si la pestaña actual está vacía, cargar el contenido aquí
                     current_widget.setPlainText(content)
                     index = self.tab_widget.indexOf(current_widget)
                     self.tab_widget.setTabText(index, os.path.basename(file_path))
-                    self.opened_files[index] = file_path  # Registrar la ruta del archivo
-                    current_widget.document().setModified(False)  # Marcar como no modificado
+                    self.opened_files[index] = file_path
                 else:
-                    # Si la pestaña actual no está vacía, abrir en una nueva pestaña
                     self.add_new_tab(file_name=os.path.basename(file_path), content=content, file_path=file_path)
 
                 # Actualizar el título de la ventana
                 self.update_window_title()
+
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo abrir el archivo: {str(e)}")
         else:
