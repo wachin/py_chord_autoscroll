@@ -524,7 +524,7 @@ class TextScrollerApp(QMainWindow):
         recent_files.insert(0, {'path': file_path, 'timestamp': timestamp})
 
         # Limitar a 15 archivos
-        self.config['recent_files'] = recent_files[:15]
+        self.config['recent_files'] = recent_files[:10]
         self.save_config()
         self.update_recent_files_menu()
 
