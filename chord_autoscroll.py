@@ -79,7 +79,6 @@ class TextScrollerApp(QMainWindow):
             if current_widget:
                 current_widget.setFont(font)
 
-
             # Guardar la fuente seleccionada en la configuración
             self.config['font_family'] = font.family()
             self.config['font_size'] = font.pointSize()
@@ -148,11 +147,16 @@ class TextScrollerApp(QMainWindow):
     def update_encoding_label(self, index):
         print(f"Actualizando etiqueta para la pestaña {index}")
         file_path = self.opened_files.get(index, None)
-        if file_path:
-            encoding = self.file_encodings.get(file_path, "Desconocida")
-            self.encoding_label.setText(f"Codificación: {encoding}")
+        if file_path and file_path in self.file_encodings:
+            encoding = self.file_encodings[file_path]['encoding']
+            line_ending = self.file_encodings[file_path]['line_ending']
+            self.encoding_label.setText(f"Codificación: {encoding} | Terminador de línea: {line_ending}")
+
+            # Actualizar el título de la ventana con el nombre del archivo
+            self.setWindowTitle(f"{os.path.basename(file_path)} - Lector y Editor de Texto con acordes")
         else:
-            self.encoding_label.setText("Codificación: N/A")
+            self.encoding_label.setText("Codificación: N/A | Terminador de línea: N/A")
+            self.setWindowTitle("Lector y Editor de Texto con acordes")
 
     def toggle_scroll(self):
         if self.is_scrolling:
@@ -198,22 +202,28 @@ class TextScrollerApp(QMainWindow):
         current_widget = self.get_current_text_widget()
         if current_widget:
             current_index = self.tab_widget.currentIndex()
-            file_path = self.opened_files.get(current_index)
-            encoding = self.file_encodings.get(file_path, 'utf-8')  # Usar codificación detectada o UTF-8
+            file_path = self.opened_files.get(current_index, None)
 
-            try:
-                with open(file_path, 'r', encoding=encoding) as f:
-                    saved_text = f.read()
-            except Exception as e:
-                saved_text = ""  # Si ocurre un error, asumir que el archivo está vacío
+            # Verificar que el archivo exista en la lista de archivos abiertos
+            if file_path:
+                encoding = self.file_encodings.get(file_path, {}).get('encoding', 'utf-8')  # Obtener la codificación
 
-            # Comparar el texto actual con el texto guardado
-            current_text = current_widget.toPlainText()
-            is_modified = current_text != saved_text
-            current_widget.document().setModified(is_modified)
+                try:
+                    # Leer el contenido guardado del archivo
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        saved_content = f.read()
+                except Exception as e:
+                    saved_content = ""  # Si ocurre un error al leer, asumir contenido vacío
 
-            # Actualizar el título de la ventana
-            self.update_window_title()
+                # Obtener el contenido actual del widget
+                current_content = current_widget.toPlainText()
+
+                # Comparar ambos para verificar si realmente ha sido modificado
+                is_modified = current_content != saved_content
+                current_widget.document().setModified(is_modified)
+
+                # Actualizar el título de la ventana
+                self.update_window_title()
 
     def update_window_title(self):
         # Obtener el índice de la pestaña activa
@@ -471,13 +481,25 @@ class TextScrollerApp(QMainWindow):
                     detected = chardet.detect(raw_data)
                     encoding = detected['encoding'] or 'utf-8'
 
+                # Detectar terminador de línea en modo binario
+                if b'\r\n' in raw_data:
+                    line_ending = "Windows (CRLF)"
+                elif b'\n' in raw_data:
+                    line_ending = "Unix (LF)"
+                elif b'\r' in raw_data:
+                    line_ending = "Mac (CR)"
+                else:
+                    line_ending = "Desconocido"
+
                 # Leer el archivo con la codificación detectada
                 with open(file_path, 'r', encoding=encoding, errors='replace') as file:
                     content = file.read()
 
-                # Guardar la codificación detectada
-                self.file_encodings[file_path] = encoding
-                self.encoding_label.setText(f"Codificación: {encoding}")
+                # Guardar codificación y terminador de línea
+                self.file_encodings[file_path] = {'encoding': encoding, 'line_ending': line_ending}
+
+                # Actualizar etiqueta de codificación
+                self.encoding_label.setText(f"Codificación: {encoding} | Terminador de línea: {line_ending}")
 
                 # Cargar el contenido en la pestaña actual o abrir una nueva
                 current_widget = self.get_current_text_widget()
@@ -524,7 +546,7 @@ class TextScrollerApp(QMainWindow):
         recent_files.insert(0, {'path': file_path, 'timestamp': timestamp})
 
         # Limitar a 15 archivos
-        self.config['recent_files'] = recent_files[:10]
+        self.config['recent_files'] = recent_files[:9]
         self.save_config()
         self.update_recent_files_menu()
 
@@ -542,13 +564,25 @@ class TextScrollerApp(QMainWindow):
                     detected = chardet.detect(raw_data)
                     encoding = detected['encoding'] or 'utf-8'
 
+                # Detectar el tipo de terminador de línea en modo binario
+                if b'\r\n' in raw_data:
+                    line_ending = "Windows (CRLF)"
+                elif b'\n' in raw_data:
+                    line_ending = "Unix (LF)"
+                elif b'\r' in raw_data:
+                    line_ending = "Mac (CR)"
+                else:
+                    line_ending = "Desconocido"
+
                 # Leer el archivo con la codificación detectada
                 with open(file_path, 'r', encoding=encoding, errors='replace') as file:
                     content = file.read()
 
-                # Guardar la codificación detectada
-                self.file_encodings[file_path] = encoding
-                self.encoding_label.setText(f"Codificación: {encoding}")
+                # Guardar la codificación y el terminador de línea
+                self.file_encodings[file_path] = {'encoding': encoding, 'line_ending': line_ending}
+
+                # Actualizar la etiqueta de codificación y terminador de línea
+                self.encoding_label.setText(f"Codificación: {encoding} | Terminador de línea: {line_ending}")
 
                 # Cargar el contenido en la pestaña actual o abrir una nueva
                 current_widget = self.get_current_text_widget()

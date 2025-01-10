@@ -79,7 +79,6 @@ class TextScrollerApp(QMainWindow):
             if current_widget:
                 current_widget.setFont(font)
 
-
             # Guardar la fuente seleccionada en la configuración
             self.config['font_family'] = font.family()
             self.config['font_size'] = font.pointSize()
