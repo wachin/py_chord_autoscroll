@@ -48,7 +48,7 @@ o si tu Distribución Linux cuenta con un lanzador de programas escritos en pyth
 
 ## Modo de Uso
 
-### 1. **Abrir canciones**
+### 1. Abrir canciones
 Existen dos maneras de cargar tus archivos de texto con acordes en el programa:
 - **Arrastrar y soltar archivos**: Simplemente arrastra un archivo de texto (con extensión `.txt`) hacia la ventana del programa.
 - **Abrir desde el menú**: Haz clic en "Archivo > Abrir" en la barra de menú para seleccionar y cargar tus archivos.
@@ -63,28 +63,68 @@ Existen dos maneras de cargar tus archivos de texto con acordes en el programa:
 
 ![](src/vx_images/04--Portada-la-niña-de-tus-ojos.png)
 
-### 2. **Transponer acordes**
+### 2. Transponer acordes
 El programa cuenta con un botón **"Transponer"**, ubicado en la esquina inferior derecha. Al hacer clic, se abrirá un menú donde puedes ajustar los semitonos de tus acordes:
 - **Subir semitonos**: Desplázate hacia arriba para aumentar el tono.
 - **Bajar semitonos**: Desplázate hacia abajo para reducir el tono.
 
 Esto es especialmente útil cuando necesitas adaptar una canción a tu voz o a la afinación de tu guitarra.
 
-### 3. **Control de desplazamiento**
+### 3. Control de desplazamiento
 El programa te permite desplazarte automáticamente por la letra y acordes de la canción, facilitando la lectura durante la interpretación.
 
 - **Iniciar/Pausar desplazamiento**: Usa los botones **"Iniciar"** y **"Pausar"** para controlar el desplazamiento automático.
 - **Ajustar velocidad**: Usa el deslizador de velocidad para ajustar la rapidez del desplazamiento según tu necesidad.
 
-### 4. **Cambiar fuente**
+### 4. Cambiar fuente
 El programa ofrece la posibilidad de personalizar la fuente de los acordes. En el menú "Opciones > Cambiar fuente", puedes seleccionar la fuente de tu preferencia. Por defecto, se utiliza una fuente monoespaciada **Noto Mono**, perfecta para asegurar la correcta alineación de los acordes.
 
-### 5. **Cambiar y guardar la velocidad de desplazamiento**
+### 5. Cambiar y guardar la velocidad de desplazamiento
 El programa ofrece la posibilidad de cambiar la velociad. En el menú "Opciones > Cambiar velocidad máxima", puedes seleccionar puedes aumentar el número que allí aparece lo que hará que la velocidad de desplazamiento sea más baja, esto funciona bien en Sistemas Operativos Debian 12 y basados en el como MX Linux 23, antiX 23, etc
 
 ---
 
-### 5. He hecho un Cancionero con muchas alabanzas que usamos en la Iglesia
+### 6. Opciones de guardado de archivos
+
+El programa incluye tres opciones para guardar archivos en el menú "Archivo":
+
+**1. Guardar**
+
+Esta opción guarda el archivo utilizando la misma codificación y terminador de línea que tenía originalmente el archivo abierto o editado. Es útil para conservar la compatibilidad con otros programas o sistemas.
+
+**2. Guardar como...**
+
+Permite guardar el archivo en una nueva ubicación, pero conserva la codificación y el terminador de línea originales del archivo abierto o editado. No muestra opciones para cambiar la codificación.
+
+**3. Guardar Codificación como...**
+
+Esta opción te permite guardar el archivo seleccionando una codificación y terminador de línea diferentes. Al elegir esta opción, aparecerá un cuadro de diálogo donde puedes seleccionar entre las siguientes codificaciones:
+
+* **UTF-8**
+ 
+* **UTF-16 LE**
+ 
+* **UTF-16 BE**
+ 
+* **UTF-8 con BOM**
+ 
+* **ANSI**
+
+* **ISO-8859-1**
+
+Y también puedes seleccionar el tipo de terminador de línea:
+
+* **Windows (CRLF)**
+
+* **Unix (LF)**
+
+* **Mac (CR)**
+
+Esto es especialmente útil si necesitas que el archivo sea compatible con diferentes sistemas operativos o programas que requieren una codificación específica.
+
+
+
+### 7. He hecho un Cancionero con muchas alabanzas que usamos en la Iglesia
 
  En la siguiente dirección está mi cancionero con letras y acordes de guitarra:
 
@@ -123,69 +163,69 @@ También revise el diccionario de acordes:
 ## Atajos Asignados  
 Los siguientes son los atajos de teclado que le he puesto:
 
-| Función                  | Atajo         |
-|--------------------------|---------------|
-| Nuevo archivo            | `Ctrl+N`      |
-| Abrir archivo            | `Ctrl+O`      |
-| Guardar archivo          | `Ctrl+S`      |
-| Guardar como             | `Ctrl+Shift+S`|
-| Salir                    | `Ctrl+Q`      |
-| Seleccionar todo          | `Ctrl+A`      |
-| Cambiar fuente           | `Ctrl+F`      |
-| Cambiar velocidad máxima | `Ctrl+Shift+V`|
-| Acerca de                | `Ctrl+H`      |
-| Deshacer	| Ctrl+Z |
-| Rehacer	| Ctrl+Shift+Z |
-| Iniciar Scroll	| Ctrl+Barra espaciadora |
-| Pausar Scroll	| Ctrl+Barra espaciadora |
+|         Función          |          Atajo           |
+| ------------------------ | ------------------------ |
+| Nuevo archivo            | `Ctrl+N`                 |
+| Abrir archivo            | `Ctrl+O`                 |
+| Guardar archivo          | `Ctrl+S`                 |
+| Guardar como             | `Ctrl+Shift+S`           |
+| Salir                    | `Ctrl+Q`                 |
+| Seleccionar todo         | `Ctrl+A`                 |
+| Cambiar fuente           | `Ctrl+F`                 |
+| Cambiar velocidad máxima | `Ctrl+Shift+V`           |
+| Acerca de                | `Ctrl+H`                 |
+| Deshacer	               | `Ctrl+Z`                 |
+| Rehacer	               | `Ctrl+Shift+Z`           |
+| Iniciar Scroll	       | `Ctrl+Barra espaciadora` |
+| Pausar Scroll	           | `Ctrl+Barra espaciadora` |
 
 ---
 
-## **Notas sobre las dependencias:**
-Explicación de para qué sirve cada una de las dependencias instaladas 😊:
+## Notas sobre las dependencias:
+Explicación de para qué sirve cada *$$*una de las dependencias instaladas 😊:
 
 ---
 
-### 1. **`python3`**
+### 1. `python3`
    - **Descripción:** Instala el intérprete de Python 3.
    - **Función:** Es la base para ejecutar programas escritos en Python.
 
 ---
 
-### 2. **`python3-pyqt6`**
+### 2. `python3-pyqt6`
    - **Descripción:** Es un conjunto de enlaces de Python para Qt 6, una biblioteca popular para crear interfaces gráficas.
    - **Función:** Proporciona los componentes gráficos (ventanas, botones, menús, etc.) que se utilizan en el programa.
    - **Ejemplo:** Permite crear ventanas principales, pestañas, etiquetas, y controles como el botón de "Iniciar" o la barra de desplazamiento.
 
 ---
 
-### 3. **`python3-mpmath`**
+### 3. `python3-mpmath`
    - **Descripción:** Biblioteca para cálculos matemáticos con precisión arbitraria.
 ---
 
-### 4. **`python3-simplejson`**
+### 4. `python3-simplejson`
    - **Descripción:** Biblioteca para trabajar con datos en formato JSON (JavaScript Object Notation).
    - **Función:** Facilita la lectura y escritura de archivos de configuración o datos estructurados en JSON. Sirve para guardar configuraciones como la fuente, velocidad de desplazamiento, o preferencias del usuario.
 
 ---
 
-### 5. **`python3-all-dev`**
+### 5. `python3-all-dev`
    - **Descripción:** Incluye archivos de desarrollo para Python 3, como cabeceras y herramientas necesarias para compilar extensiones en C/C++.
    - **Función:** Es útil si necesitas compilar bibliotecas adicionales o trabajar en el desarrollo de módulos personalizados para Python.
 
 ---
 
-### 6. **`fonts-noto-mono`**
+### 6. `fonts-noto-mono`
    - **Descripción:** Es un conjunto de fuentes monoespaciadas de alta calidad de la familia Noto.
    - **Función:** Proporciona una fuente monoespaciada (usada comúnmente en editores de texto y código) para mostrar contenido de manera clara y legible. Es la fuente predeterminada para mostrar letras y acordes en el editor de texto.
 
 ---
 
-### 7. **`python3-chardet`**
+### 7. `python3-chardet`
    - **Descripción:** Biblioteca para detectar la codificación de archivos de texto.
    - **Función:** Permite que el programa identifique automáticamente la codificación de un archivo al abrirlo, asegurando que pueda manejar archivos en formatos como UTF-8, ISO-8859-1, o Windows-1252, y otros.
 
-### 8. **`qt6-translations-l10n`**
+### 8. `qt6-translations-l10n`
 El paquete `qt6-translations-l10n` en Debian 12 proporciona archivos de traducción para la biblioteca Qt6, lo que significa que añade soporte para múltiples idiomas en las aplicaciones desarrolladas con Qt6, incluyendo el español, entre otros idiomas.
 
 Qt es un framework ampliamente utilizado para crear interfaces gráficas de usuario (GUI) y aplicaciones multiplataforma. Los cuadros de diálogo como "Abrir", "Guardar como", y otros mensajes de sistema que ves en el editor en Python se generan mediante la interfaz de Qt, y esos mensajes pueden estar traducidos dependiendo de la configuración de idioma del sistema.
