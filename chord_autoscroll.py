@@ -9,7 +9,7 @@ from PyQt6.QtGui import (QFont, QAction, QActionGroup, QDragEnterEvent, QDropEve
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QWidget, QPushButton, QLabel, QSlider, QFileDialog, QMenuBar,
                              QMenu, QMessageBox, QInputDialog, QFontDialog, QTabWidget)
-from PyQt6.QtCore import Qt, QTimer, QUrl
+from PyQt6.QtCore import Qt, QTimer, QUrl, QTranslator, QLocale, QLibraryInfo
 
 class CustomTextEdit(QTextEdit):
     def __init__(self, parent=None):
@@ -41,6 +41,18 @@ class TextScrollerApp(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        self.translator = QTranslator()
+
+        translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+        print(f"Ruta de traducciones: {translations_path}")  # Depuración
+
+        # Cargar traducción al español
+        if self.translator.load("qtbase_es", translations_path):
+            QApplication.installTranslator(self.translator)
+            print("Traducción al español cargada correctamente.")
+        else:
+            print("No se pudo cargar la traducción al español.")
+
         self.setWindowTitle("Lector y Editor de Letras con Acordes")
         self.setGeometry(100, 100, 800, 500)
 
@@ -291,12 +303,12 @@ class TextScrollerApp(QMainWindow):
         if current_widget:
             current_widget.copy()
 
-        # Nueva función: Pegar 
+        # Nueva función: Pegar
     def paste_text(self):
         current_widget = self.get_current_text_widget()
         if current_widget:
             current_widget.paste()
-            
+
     def cut_text(self):
         current_widget = self.get_current_text_widget()
         if current_widget:
@@ -328,9 +340,14 @@ class TextScrollerApp(QMainWindow):
         file_menu.addAction(save_action)
 
         save_as_action = QAction("Guardar como", self)
-        save_as_action.triggered.connect(self.save_file_as)  # Llama a save_file_as en lugar de save_file
+        save_as_action.triggered.connect(self.save_file_as_original)  # Llama a save_file_as en lugar de save_file
         save_as_action.setShortcut("Ctrl+Shift+S")  # Atajo: Ctrl+Shift+S
         file_menu.addAction(save_as_action)
+
+        # Opción Guardar Codificación como
+        save_as_encoding_action = QAction("Guardar Codificación como...", self)
+        save_as_encoding_action.triggered.connect(self.save_file_with_encoding)
+        file_menu.addAction(save_as_encoding_action)
 
         file_menu.addSeparator()
 
@@ -351,24 +368,24 @@ class TextScrollerApp(QMainWindow):
         redo_action.triggered.connect(lambda: self.get_current_text_widget().redo())
         redo_action.setShortcut("Ctrl+Shift+Z")  # Atajo: Ctrl+Shift+Z
         edit_menu.addAction(redo_action)
-        
+
         # Añadir un separador
         edit_menu.addSeparator()
-                
+
         # Nueva opción: Copiar
         copy_action = QAction("Copiar", self)
         copy_action.triggered.connect(self.copy_text)
         copy_action.setShortcut("Ctrl+C")  # Atajo de teclado: Ctrl+C
         edit_menu.addAction(copy_action)
-        
+
         # Nueva opción: Pegar
         paste_action = QAction("Pegar", self)
         paste_action.triggered.connect(self.paste_text)
         paste_action.setShortcut("Ctrl+V")  # Atajo de teclado: Ctrl+V
         edit_menu.addAction(paste_action)
-        
-        # Nueva opción: Cortar 
-                
+
+        # Nueva opción: Cortar
+
         cut_action = QAction("Cortar", self)
         cut_action.triggered.connect(self.cut_text)
         cut_action.setShortcut("Ctrl+X")  # Atajo de teclado: Ctrl+X
@@ -629,24 +646,30 @@ class TextScrollerApp(QMainWindow):
         file_path = self.opened_files.get(index)
 
         if file_path:
-            # Guardar directamente en la ubicación conocida
+            # Guardar directamente en la ubicación conocida con la codificación y fin de línea originales
             try:
-                with open(file_path, 'w', encoding='utf-8') as file:
-                    file.write(current_widget.toPlainText())
-                # Desabilito el mensaje de configuración al guardar cualquier archivo    
-                # QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
+                encoding = self.file_encodings.get(file_path, {}).get('encoding', 'utf-8')
+                line_ending = self.file_encodings.get(file_path, {}).get('line_ending', 'Unix (LF)')
+
+                # Obtener el contenido y ajustar el fin de línea
+                content = current_widget.toPlainText()
+                if line_ending == "Windows (CRLF)":
+                    content = content.replace('\n', '\r\n')
+                elif line_ending == "Mac (CR)":
+                    content = content.replace('\n', '\r')
+
+                with open(file_path, 'w', encoding=encoding) as file:
+                    file.write(content)
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
         else:
             # Si no hay ubicación conocida, mostrar "Guardar como"
             self.save_file_as()
 
-        current_widget = self.get_current_text_widget()
-        if current_widget:
-            current_widget.document().setModified(False)  # Marcar como no modificado
-            self.update_window_title()  # Actualizar el título
+        current_widget.document().setModified(False)  # Marcar como no modificado
+        self.update_window_title()  # Actualizar el título
 
-    def save_file_as(self):
+    def save_file_as_original(self):
         current_widget = self.get_current_text_widget()
         if not current_widget:
             QMessageBox.warning(self, "Error", "No hay ninguna pestaña activa para guardar.")
@@ -654,28 +677,97 @@ class TextScrollerApp(QMainWindow):
 
         # Obtener el índice de la pestaña actual y el nombre del archivo asociado
         index = self.tab_widget.currentIndex()
-        current_file_path = self.opened_files.get(index)
-        suggested_name = current_file_path if current_file_path else "Nuevo archivo.txt"
+        suggested_name = self.opened_files.get(index, "Nuevo archivo.txt")
 
-        # Abrir el cuadro de diálogo de "Guardar como" con el nombre sugerido
+        # Mostrar cuadro de diálogo "Guardar como"
         file_path, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", suggested_name, "Archivos de texto (*.txt)")
         if file_path:
             try:
-                with open(file_path, 'w', encoding='utf-8') as file:
-                    file.write(current_widget.toPlainText())
+                # Obtener la codificación y el fin de línea originales
+                encoding = self.file_encodings.get(suggested_name, {}).get('encoding', 'utf-8')
+                line_ending = self.file_encodings.get(suggested_name, {}).get('line_ending', 'Unix (LF)')
 
-                # Asociar la pestaña con la nueva ubicación
+                # Ajustar el fin de línea en el contenido
+                content = current_widget.toPlainText()
+                if line_ending == "Windows (CRLF)":
+                    content = content.replace('\n', '\r\n')
+                elif line_ending == "Mac (CR)":
+                    content = content.replace('\n', '\r')
+
+                # Guardar el archivo
+                with open(file_path, 'w', encoding=encoding) as file:
+                    file.write(content)
+
+                # Actualizar datos del archivo en la pestaña
                 self.opened_files[index] = file_path
+                self.file_encodings[file_path] = {'encoding': encoding, 'line_ending': line_ending}
                 self.tab_widget.setTabText(index, os.path.basename(file_path))
-
-                QMessageBox.information(self, "Guardado", f"Archivo guardado en {file_path}.")
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
 
+    def save_file_with_encoding(self):
         current_widget = self.get_current_text_widget()
-        if current_widget:
-            current_widget.document().setModified(False)  # Marcar como no modificado
-            self.update_window_title()  # Actualizar el título
+        if not current_widget:
+            QMessageBox.warning(self, "Error", "No hay ninguna pestaña activa para guardar.")
+            return
+
+        # Obtener el índice de la pestaña actual y el nombre del archivo asociado
+        index = self.tab_widget.currentIndex()
+        suggested_name = self.opened_files.get(index, "Nuevo archivo.txt")
+
+        # Mostrar cuadro de diálogo "Guardar como"
+        file_path, _ = QFileDialog.getSaveFileName(self, "Guardar archivo", suggested_name, "Archivos de texto (*.txt)")
+        if file_path:
+            # Cuadro de diálogo para seleccionar codificación
+            encoding, ok = QInputDialog.getItem(
+                self,
+                "Seleccionar codificación",
+                "Codificación:",
+                ["UTF-8", "UTF-16 LE", "UTF-16 BE", "UTF-8 con BOM", "ANSI", "ISO-8859-1"],
+                0,
+                False
+            )
+            if not ok:
+                return
+
+            # Cuadro de diálogo para seleccionar tipo de fin de línea
+            line_ending, ok = QInputDialog.getItem(
+                self,
+                "Seleccionar terminador de línea",
+                "Terminador de línea:",
+                ["Windows (CRLF)", "Unix (LF)", "Mac (CR)"],
+                0,
+                False
+            )
+            if not ok:
+                return
+
+            try:
+                # Ajustar el fin de línea en el contenido
+                content = current_widget.toPlainText()
+                if line_ending == "Windows (CRLF)":
+                    content = content.replace('\n', '\r\n')
+                elif line_ending == "Mac (CR)":
+                    content = content.replace('\n', '\r')
+
+                # Guardar con la codificación seleccionada
+                if encoding == "UTF-8 con BOM":
+                    with open(file_path, 'w', encoding='utf-8-sig') as file:
+                        file.write(content)
+                elif encoding == "ANSI":
+                    with open(file_path, 'w', encoding='windows-1252') as file:
+                        file.write(content)
+                else:
+                    with open(file_path, 'w', encoding=encoding.lower().replace(" ", "-")) as file:
+                        file.write(content)
+
+                # Actualizar datos del archivo en la pestaña
+                self.opened_files[index] = file_path
+                self.file_encodings[file_path] = {'encoding': encoding, 'line_ending': line_ending}
+                self.tab_widget.setTabText(index, os.path.basename(file_path))
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
+
 
     def start_scrolling(self):
         if not self.is_scrolling:
