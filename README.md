@@ -2,9 +2,9 @@
 
 Este programa es ideal para guitarristas que necesitan gestionar archivos de canciones en formato de texto .txt y ajustar los acordes rápidamente durante ensayos. Con características de auto-scroll y transposición, tendrás todas las herramientas necesarias a tu disposición para poder adaptar una canción para tu voz.
 
-## Probado en:
-- Linux Debian 12
-- MX Linux 23
+## Probado en los siguientes Linux:
+- Linux Debian 12 de 32 bit
+- MX Linux 23 de 32 y 64 bit
 
 
 ---
@@ -22,80 +22,7 @@ sudo apt-get install python3 python3-pyqt6 python3-mpmath \
     fonts-noto-mono python3-chardet
 ```
 
-Explicación de para qué sirve cada una de las dependencias instaladas 😊:
-
----
-
-### 1. **`python3`**
-   - **Descripción:** Instala el intérprete de Python 3.
-   - **Función:** Es la base para ejecutar programas escritos en Python.
-
----
-
-### 2. **`python3-pyqt6`**
-   - **Descripción:** Es un conjunto de enlaces de Python para Qt 6, una biblioteca popular para crear interfaces gráficas.
-   - **Función:** Proporciona los componentes gráficos (ventanas, botones, menús, etc.) que se utilizan en el programa.
-   - **Ejemplo:** Permite crear ventanas principales, pestañas, etiquetas, y controles como el botón de "Iniciar" o la barra de desplazamiento.
-
----
-
-### 3. **`python3-mpmath`**
-   - **Descripción:** Biblioteca para cálculos matemáticos con precisión arbitraria.
----
-
-### 4. **`python3-simplejson`**
-   - **Descripción:** Biblioteca para trabajar con datos en formato JSON (JavaScript Object Notation).
-   - **Función:** Facilita la lectura y escritura de archivos de configuración o datos estructurados en JSON. Sirve para guardar configuraciones como la fuente, velocidad de desplazamiento, o preferencias del usuario.
-
----
-
-### 5. **`python3-all-dev`**
-   - **Descripción:** Incluye archivos de desarrollo para Python 3, como cabeceras y herramientas necesarias para compilar extensiones en C/C++.
-   - **Función:** Es útil si necesitas compilar bibliotecas adicionales o trabajar en el desarrollo de módulos personalizados para Python.
-
----
-
-### 6. **`fonts-noto-mono`**
-   - **Descripción:** Es un conjunto de fuentes monoespaciadas de alta calidad de la familia Noto.
-   - **Función:** Proporciona una fuente monoespaciada (usada comúnmente en editores de texto y código) para mostrar contenido de manera clara y legible. Es la fuente predeterminada para mostrar letras y acordes en el editor de texto.
-
----
-
-### 7. **`python3-chardet`**
-   - **Descripción:** Biblioteca para detectar la codificación de archivos de texto.
-   - **Función:** Permite que tel programa identifique automáticamente la codificación de un archivo al abrirlo, asegurando que pueda manejar archivos en formatos como UTF-8, ISO-8859-1, o Windows-1252, y otros.
-
-### 8. **qt6-translations-l10n**
-El paquete `qt6-translations-l10n` en Debian 12 proporciona archivos de traducción para la biblioteca Qt6, lo que significa que añade soporte para múltiples idiomas en las aplicaciones desarrolladas con Qt6, incluyendo el español, entre otros idiomas.
-
-Qt es un framework ampliamente utilizado para crear interfaces gráficas de usuario (GUI) y aplicaciones multiplataforma. Los cuadros de diálogo como "Abrir", "Guardar como", y otros mensajes de sistema que ves en el editor en Python se generan mediante la interfaz de Qt, y esos mensajes pueden estar traducidos dependiendo de la configuración de idioma del sistema.
-
-**Función del paquete `qt6-translations-l10n`:**
-- **Traducción de la interfaz**: Cuando instalas el paquete `qt6-translations-l10n`, estás proporcionando las traducciones necesarias para que los elementos de la interfaz de Qt, como los diálogos de archivo, botones, menús, etc., aparezcan en el idioma configurado en tu sistema (en este caso, español).
-
-La parte del codigo agregado para que funcion esto es:
-
-```
-from PyQt6.QtCore import Qt, QTimer, QUrl, QTranslator, QLocale, QLibraryInfo
-
-    # Resto del código
-
-    def __init__(self):
-        super().__init__()
-        self.translator = QTranslator()
-
-        translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
-        print(f"Ruta de traducciones: {translations_path}")  # Depuración
-
-        # Cargar traducción al español
-        if self.translator.load("qtbase_es", translations_path):
-            QApplication.installTranslator(self.translator)
-            print("Traducción al español cargada correctamente.")
-        else:
-            print("No se pudo cargar la traducción al español.")
-            
-    # Resto del código
-```
+**Nota:** Al final dejo explicaciones de para qué sirven algunos de estos paquetes.
 
 ---
 
@@ -214,9 +141,89 @@ Los siguientes son los atajos de teclado que le he puesto:
 
 ---
 
-### **Notas sobre las dependencias:**
+## **Notas sobre las dependencias:**
+Explicación de para qué sirve cada una de las dependencias instaladas 😊:
 
-Si encuentras que falta alguna dependencia en tu sistema (esto lo podrías ver cuando abras el programa desde la terminal), puedes agregarla mediante el comando `apt-get` de forma similar. El programa depende principalmente de **Python 3**, **PyQt6** y algunas bibliotecas adicionales para manejo de fuentes y archivos. Me comunica alguna cosa
+---
+
+### 1. **`python3`**
+   - **Descripción:** Instala el intérprete de Python 3.
+   - **Función:** Es la base para ejecutar programas escritos en Python.
+
+---
+
+### 2. **`python3-pyqt6`**
+   - **Descripción:** Es un conjunto de enlaces de Python para Qt 6, una biblioteca popular para crear interfaces gráficas.
+   - **Función:** Proporciona los componentes gráficos (ventanas, botones, menús, etc.) que se utilizan en el programa.
+   - **Ejemplo:** Permite crear ventanas principales, pestañas, etiquetas, y controles como el botón de "Iniciar" o la barra de desplazamiento.
+
+---
+
+### 3. **`python3-mpmath`**
+   - **Descripción:** Biblioteca para cálculos matemáticos con precisión arbitraria.
+---
+
+### 4. **`python3-simplejson`**
+   - **Descripción:** Biblioteca para trabajar con datos en formato JSON (JavaScript Object Notation).
+   - **Función:** Facilita la lectura y escritura de archivos de configuración o datos estructurados en JSON. Sirve para guardar configuraciones como la fuente, velocidad de desplazamiento, o preferencias del usuario.
+
+---
+
+### 5. **`python3-all-dev`**
+   - **Descripción:** Incluye archivos de desarrollo para Python 3, como cabeceras y herramientas necesarias para compilar extensiones en C/C++.
+   - **Función:** Es útil si necesitas compilar bibliotecas adicionales o trabajar en el desarrollo de módulos personalizados para Python.
+
+---
+
+### 6. **`fonts-noto-mono`**
+   - **Descripción:** Es un conjunto de fuentes monoespaciadas de alta calidad de la familia Noto.
+   - **Función:** Proporciona una fuente monoespaciada (usada comúnmente en editores de texto y código) para mostrar contenido de manera clara y legible. Es la fuente predeterminada para mostrar letras y acordes en el editor de texto.
+
+---
+
+### 7. **`python3-chardet`**
+   - **Descripción:** Biblioteca para detectar la codificación de archivos de texto.
+   - **Función:** Permite que el programa identifique automáticamente la codificación de un archivo al abrirlo, asegurando que pueda manejar archivos en formatos como UTF-8, ISO-8859-1, o Windows-1252, y otros.
+
+### 8. **`qt6-translations-l10n`**
+El paquete `qt6-translations-l10n` en Debian 12 proporciona archivos de traducción para la biblioteca Qt6, lo que significa que añade soporte para múltiples idiomas en las aplicaciones desarrolladas con Qt6, incluyendo el español, entre otros idiomas.
+
+Qt es un framework ampliamente utilizado para crear interfaces gráficas de usuario (GUI) y aplicaciones multiplataforma. Los cuadros de diálogo como "Abrir", "Guardar como", y otros mensajes de sistema que ves en el editor en Python se generan mediante la interfaz de Qt, y esos mensajes pueden estar traducidos dependiendo de la configuración de idioma del sistema.
+
+**Función del paquete `qt6-translations-l10n`:**
+- **Traducción de la interfaz**: Cuando instalas el paquete `qt6-translations-l10n`, estás proporcionando las traducciones necesarias para que los elementos de la interfaz de Qt, como los diálogos de archivo, botones, menús, etc., aparezcan en el idioma configurado en tu sistema (en este caso, español).
+
+La parte del código agregado para que funcione esto es:
+
+```
+import sys
+import os
+import math
+
+# Resto del código
+
+from PyQt6.QtCore import Qt, QTimer, QUrl, QTranslator, QLocale, QLibraryInfo
+
+    # Resto del código
+
+    def __init__(self):
+        super().__init__()
+        self.translator = QTranslator()
+
+        translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+        print(f"Ruta de traducciones: {translations_path}")  # Depuración
+
+        # Cargar traducción al español
+        if self.translator.load("qtbase_es", translations_path):
+            QApplication.installTranslator(self.translator)
+            print("Traducción al español cargada correctamente.")
+        else:
+            print("No se pudo cargar la traducción al español.")
+            
+    # Resto del código
+```
+
+
 
 ---
 
