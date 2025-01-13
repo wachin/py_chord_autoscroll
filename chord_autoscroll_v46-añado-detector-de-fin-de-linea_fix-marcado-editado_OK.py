@@ -291,12 +291,12 @@ class TextScrollerApp(QMainWindow):
         if current_widget:
             current_widget.copy()
 
-        # Nueva función: Pegar 
+        # Nueva función: Pegar
     def paste_text(self):
         current_widget = self.get_current_text_widget()
         if current_widget:
             current_widget.paste()
-            
+
     def cut_text(self):
         current_widget = self.get_current_text_widget()
         if current_widget:
@@ -351,24 +351,24 @@ class TextScrollerApp(QMainWindow):
         redo_action.triggered.connect(lambda: self.get_current_text_widget().redo())
         redo_action.setShortcut("Ctrl+Shift+Z")  # Atajo: Ctrl+Shift+Z
         edit_menu.addAction(redo_action)
-        
+
         # Añadir un separador
         edit_menu.addSeparator()
-                
+
         # Nueva opción: Copiar
         copy_action = QAction("Copiar", self)
         copy_action.triggered.connect(self.copy_text)
         copy_action.setShortcut("Ctrl+C")  # Atajo de teclado: Ctrl+C
         edit_menu.addAction(copy_action)
-        
+
         # Nueva opción: Pegar
         paste_action = QAction("Pegar", self)
         paste_action.triggered.connect(self.paste_text)
         paste_action.setShortcut("Ctrl+V")  # Atajo de teclado: Ctrl+V
         edit_menu.addAction(paste_action)
-        
-        # Nueva opción: Cortar 
-                
+
+        # Nueva opción: Cortar
+
         cut_action = QAction("Cortar", self)
         cut_action.triggered.connect(self.cut_text)
         cut_action.setShortcut("Ctrl+X")  # Atajo de teclado: Ctrl+X
@@ -629,7 +629,7 @@ class TextScrollerApp(QMainWindow):
         file_path = self.opened_files.get(index)
 
         if file_path:
-            # Guardar directamente en la ubicación conocida
+            # Guardar directamente en la ubicación conocida 
             try:
                 with open(file_path, 'w', encoding='utf-8') as file:
                     file.write(current_widget.toPlainText())

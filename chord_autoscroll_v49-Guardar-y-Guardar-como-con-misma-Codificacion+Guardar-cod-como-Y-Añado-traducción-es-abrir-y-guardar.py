@@ -140,7 +140,7 @@ class TextScrollerApp(QMainWindow):
         self.transpose_button = QPushButton("Transponer")
         self.transpose_button.clicked.connect(self.show_transpose_menu)
         control_layout.addWidget(self.transpose_button)
-
+        
         # Añadir etiqueta para mostrar la codificación
         self.encoding_label = QLabel("Codificación: UTF-8")
         self.encoding_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -663,10 +663,11 @@ class TextScrollerApp(QMainWindow):
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {str(e)}")
         else:
+            # Si no hay ubicación conocida, mostrar "Guardar como"
             self.save_file_as()
 
         current_widget.document().setModified(False)  # Marcar como no modificado
-        self.update_window_title()
+        self.update_window_title()  # Actualizar el título
 
     def save_file_as_original(self):
         current_widget = self.get_current_text_widget()

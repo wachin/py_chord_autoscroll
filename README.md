@@ -73,6 +73,30 @@ Qt es un framework ampliamente utilizado para crear interfaces gráficas de usua
 **Función del paquete `qt6-translations-l10n`:**
 - **Traducción de la interfaz**: Cuando instalas el paquete `qt6-translations-l10n`, estás proporcionando las traducciones necesarias para que los elementos de la interfaz de Qt, como los diálogos de archivo, botones, menús, etc., aparezcan en el idioma configurado en tu sistema (en este caso, español).
 
+La parte del codigo agregado para que funcion esto es:
+
+```
+from PyQt6.QtCore import Qt, QTimer, QUrl, QTranslator, QLocale, QLibraryInfo
+
+    # Resto del código
+
+    def __init__(self):
+        super().__init__()
+        self.translator = QTranslator()
+
+        translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+        print(f"Ruta de traducciones: {translations_path}")  # Depuración
+
+        # Cargar traducción al español
+        if self.translator.load("qtbase_es", translations_path):
+            QApplication.installTranslator(self.translator)
+            print("Traducción al español cargada correctamente.")
+        else:
+            print("No se pudo cargar la traducción al español.")
+            
+    # Resto del código
+```
+
 ---
 
 ## 2. Ejecutar el programa
