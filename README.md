@@ -18,7 +18,7 @@ Antes de ejecutar el programa, necesitas asegurarte de que ciertos paquetes est�
 
 ```bash
 sudo apt-get install python3 python3-pyqt6 python3-mpmath \
-    python3-simplejson python3-all-dev \
+    python3-simplejson python3-all-dev qt6-translations-l10n \
     fonts-noto-mono python3-chardet
 ```
 
@@ -64,6 +64,14 @@ Explicación de para qué sirve cada una de las dependencias instaladas 😊:
 ### 7. **`python3-chardet`**
    - **Descripción:** Biblioteca para detectar la codificación de archivos de texto.
    - **Función:** Permite que tel programa identifique automáticamente la codificación de un archivo al abrirlo, asegurando que pueda manejar archivos en formatos como UTF-8, ISO-8859-1, o Windows-1252, y otros.
+
+### 8. **qt6-translations-l10n**
+El paquete `qt6-translations-l10n` en Debian 12 proporciona archivos de traducción para la biblioteca Qt6, lo que significa que añade soporte para múltiples idiomas en las aplicaciones desarrolladas con Qt6, incluyendo el español, entre otros idiomas.
+
+Qt es un framework ampliamente utilizado para crear interfaces gráficas de usuario (GUI) y aplicaciones multiplataforma. Los cuadros de diálogo como "Abrir", "Guardar como", y otros mensajes de sistema que ves en el editor en Python se generan mediante la interfaz de Qt, y esos mensajes pueden estar traducidos dependiendo de la configuración de idioma del sistema.
+
+**Función del paquete `qt6-translations-l10n`:**
+- **Traducción de la interfaz**: Cuando instalas el paquete `qt6-translations-l10n`, estás proporcionando las traducciones necesarias para que los elementos de la interfaz de Qt, como los diálogos de archivo, botones, menús, etc., aparezcan en el idioma configurado en tu sistema (en este caso, español).
 
 ---
 
