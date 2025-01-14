@@ -140,29 +140,36 @@ lo puedes descargar así:
 
 ![](src/vx_images/03-descarga-mi-cancionero-de-canciones-con-acordes-de-guitarra.webp)
 
-si eres desarrollador puedes Clonarlo, también crear un Fork.
+Las canciones están en la carpeta:  
 
-Las canciones están en la carpeta:
 
-/Acordes de Guitarra para celular (63x110mm)
+🗀 Acordes de Guitarra para celular (63x110mm)
 
-y debes instalar la siguiente fuente tipográfica que la dejé allí mismo:
 
-/Cancionero/Fonts/iosevka-wps-linux/
+y debes instalar la siguiente fuente tipográfica que la dejé allí mismo para varias canciones que uso:
+
+
+🗀 Cancionero/Fonts/iosevka-wps-linux/  
+
+
+allí están las instrucciones de instalación. Aunque ultimamente he llegado a la conclusión que para las nuevas usaré la fuente de Microsoft llama Consolas pues pensando en los usuarios de Windows que usan Microsoft Office Word, y además para usarlas online en [https://www.office.com/](https://www.office.com/)
 
 Para editar los archivos .docx puedes usar LibreOffice, WPS Office, Microsoft Windows (si lo tenga instalado en Wine o PlayOnLinux)
 
-Le dejo los siguientes temas importantes que he escrito en mi Blog:
+---
 
-[Instalar fuentes tipográficas de Windows en Linux(Ubuntu, Debian, Fedora, etc) para compatibilidad de archivos de Midrosoft Office en LibreOffice, WPS Office](https://facilitarelsoftwarelibre.blogspot.com/2018/11/instalar-fuentes-de-windows-en.html)
+#### Temas sobre instalación de fuentes tipográficas
+Le dejo los siguientes temas importantes que he escrito sobre las fuentes tipográficas en mi Blog:
 
-[Cómo instalar fuentes tipográficas descargadas desde Internet en Linux + Análisis de las fuentes de los repositorios de Debian, Ubuntu: Ibm, Noto, Liberation, Dejavu, Bitstream Vera , Freefont](https://facilitarelsoftwarelibre.blogspot.com/2021/01/como-instalar-fuentes-tipograficas-en-linux.html)
+**Instalar fuentes tipográficas de Windows en Linux(Ubuntu, Debian, Fedora, etc) para compatibilidad de archivos de Midrosoft Office en LibreOffice, WPS Office** 
+[https://facilitarelsoftwarelibre.blogspot.com/2018/11/instalar-fuentes-de-windows-en.html](https://facilitarelsoftwarelibre.blogspot.com/2018/11/instalar-fuentes-de-windows-en.html)
 
-[Fuentes monoespaciadas (mono fonts) en WPS Office no están alineadas](https://facilitarelsoftwarelibre.blogspot.com/2022/05/problema-con-las-fuentes-monoespaciadas.html)
 
-También revise el diccionario de acordes:
+**Cómo instalar fuentes tipográficas descargadas desde Internet en Linux + Análisis de las fuentes de los repositorios de Debian, Ubuntu: Ibm, Noto, Liberation, Dejavu, Bitstream Vera , Freefont** 
+[https://facilitarelsoftwarelibre.blogspot.com/2021/01/como-instalar-fuentes-tipograficas-en-linux.html](https://facilitarelsoftwarelibre.blogspot.com/2021/01/como-instalar-fuentes-tipograficas-en-linux.html)
 
-/Cancionero/Diccionario de Acordes/
+**Fuentes monoespaciadas (mono fonts) en WPS Office no están alineadas**
+[https://facilitarelsoftwarelibre.blogspot.com/2022/05/problema-con-las-fuentes-monoespaciadas.html](https://facilitarelsoftwarelibre.blogspot.com/2022/05/problema-con-las-fuentes-monoespaciadas.html)
 
 ---
 
@@ -268,8 +275,6 @@ from PyQt6.QtCore import Qt, QTimer, QUrl, QTranslator, QLocale, QLibraryInfo
             
     # Resto del código
 ```
-
-
 
 ---
 
